@@ -49,6 +49,18 @@ test('TC-NV-15 quem acerta atira de novo', async () => {
   expect(atingidas('meu')).toBe(0);
 });
 
+test('TC-NV-16 água passa a vez', async () => {
+  const user = await abrirJogo(CENARIO_BATALHA);
+  await user.click(alvo('J10'));
+  expect(alvo('J10')).toHaveAttribute('data-estado', 'erro');
+  await waitFor(() => {
+    expect(meu('I1')).toHaveAttribute('data-estado', 'erro');
+    expect(screen.getByTestId('vez')).toHaveTextContent(/^Você$/);
+  }, ESPERA);
+  expect(atingidas('meu')).toBe(1);
+  expect(meu('I2')).toHaveAttribute('data-estado', 'agua');
+});
+
 test('TC-NV-18 casa repetida não conta', async () => {
   const user = await abrirJogo(CENARIO_BATALHA);
   await user.click(alvo('J10'));
