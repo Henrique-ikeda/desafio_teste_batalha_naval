@@ -9,7 +9,7 @@ Cada regra da seção 1 do PLANEJAMENTO.md (e o parâmetro `jogador` do contrato
 | 3 | Horizontal → direita, vertical → baixo | 03, 04, 33 |
 | 4 | Não sai do tabuleiro | 05, 31 |
 | 5 | Não sobrepõe | 06 |
-| 6 | Não encosta, nem de lado nem na diagonal | 07, 08, 11 |
+| 6 | Não encosta, nem de lado nem na diagonal | 07, 08, 11, 36 |
 | 7 | Devolver navio posicionado | 09, 32 |
 | 8 | Começar só com 4 navios; Aleatório segue as regras (e tira o que já estava) | 10, 11, 34 |
 | 9 | Frota do computador escondida | 12 |

@@ -50,7 +50,7 @@ npx jest tests/<arquivo>.spec.js -t "TC-NV-NN"   # um caso só
 - **Metodologia:** TDD, um caso de teste por vez: escrever, rodar, ver falhar pelo motivo certo e fazer o commit `test:`. Uso de IA documentado em [docs/TDD-COM-IA.md](docs/TDD-COM-IA.md).
 - **Integração contínua:** o GitHub Actions ([`.github/workflows/testes.yml`](.github/workflows/testes.yml)) roda `npm ci` e `npm run verificar` em todo push e Pull Request, com Node 18, 20 e 22 no Ubuntu e no Windows, e guarda como artefato o relatório JSON do Jest e a saída do verificador. Na entrega, o job `verificar-completo` (rodado à mão ou num PR com o rótulo `entrega`) roda `npm run verificar:completo`, que também exige um teste para cada caso da tabela abaixo.
 
-## Casos de teste (33)
+## Casos de teste (34)
 
 | ID | Cenário | Arquivo | Resultado esperado | Autor |
 |---|---|---|---|---|
@@ -87,6 +87,7 @@ npx jest tests/<arquivo>.spec.js -t "TC-NV-NN"   # um caso só
 | TC-NV-33 | Orientação alterna nos dois sentidos | `tests/montagem-da-frota.spec.js` | `btn-orientacao` = "Vertical" depois do 1º clique e "Horizontal" depois do 2º; `meu-A1` a `meu-D1` = `navio`; `meu-A2` = `agua`; exatamente 4 casas `navio` | Henrique |
 | TC-NV-34 | Aleatório substitui a frota, não soma | `tests/montagem-da-frota.spec.js` | Depois de cada clique: exatamente 14 casas `navio`; os grupos de casas `navio` que se tocam (inclusive na diagonal) são 4, com tamanhos 2, 3, 4 e 5; a lista de navios fica vazia; `btn-comecar` habilitado | Henrique |
 | TC-NV-35 | Parâmetro `jogador` monta a sua frota e pula para a batalha | `tests/montagem-da-frota.spec.js` | Exatamente as 14 casas da `FROTA_FIXA` em `meu-*` = `navio` (`A1`–`A5`, `C1`–`C4`, `E1`–`E3`, `G1`–`G2`); a lista de navios fica vazia; `vez` = "Você"; o tiro em `alvo-J10` é aceito (vira `erro`) | Henrique |
+| TC-NV-36 | Encostar na ponta, na mesma linha | `tests/montagem-da-frota.spec.js` | Recusado: `meu-F1` e `meu-G1` continuam `agua`; exatamente 5 casas `navio` (só o P); `mensagem` contém "inválida"; `frota-D` continua na lista | Henrique |
 
 ## Estrutura
 
