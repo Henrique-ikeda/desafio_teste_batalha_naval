@@ -151,3 +151,25 @@ test('TC-NV-32 reposicionar um navio devolvido', async () => {
   // O P saiu da lista de novo.
   expect(screen.queryByTestId('frota-P')).not.toBeInTheDocument();
 });
+
+test('TC-NV-33 orientação alterna nos dois sentidos', async () => {
+  const user = await abrirJogo();
+  // Clique à mão (sem o helper posicionar, que corrige a orientação sozinho).
+  const botao = screen.getByTestId('btn-orientacao');
+  await user.click(botao);
+  expect(botao).toHaveTextContent(/^Vertical$/);
+  await user.click(botao);
+  expect(botao).toHaveTextContent(/^Horizontal$/);
+
+  // Com a orientação de volta a horizontal, E (4 casas) em A1 vai para a direita: A1 a D1.
+  await user.click(screen.getByTestId('frota-E'));
+  await user.click(meu('A1'));
+  for (const casa of ['A1', 'B1', 'C1', 'D1']) {
+    expect(meu(casa)).toHaveAttribute('data-estado', 'navio');
+  }
+  // Não cresceu para baixo.
+  expect(meu('A2')).toHaveAttribute('data-estado', 'agua');
+  // Fronteira: a quinta casa da linha não pode virar navio.
+  expect(meu('E1')).toHaveAttribute('data-estado', 'agua');
+  expect(casasNoEstado('meu', 'navio')).toHaveLength(4);
+});
