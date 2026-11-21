@@ -432,3 +432,25 @@ test('TC-NV-36 encostar na ponta, na mesma linha', async () => {
   // O D continua na lista de navios a posicionar.
   expect(within(screen.getByTestId('lista-frota')).getByTestId('frota-D')).toBeVisible();
 });
+
+test('TC-NV-37 navio continua selecionado depois da recusa', async () => {
+  const user = await abrirJogo();
+  // P (5 casas) em A1 para a direita: A1 a E1.
+  await posicionar(user, 'P', 'A1', 'H');
+
+  // D selecionado (clique à mão, sem o helper posicionar) e F2 tentado: F2 encosta em E1 na diagonal, então é recusado.
+  await user.click(screen.getByTestId('frota-D'));
+  await user.click(meu('F2'));
+  // Recusado: a mensagem avisa com "inválida" e só as 5 casas do P são navio.
+  expect(screen.getByTestId('mensagem')).toHaveTextContent(/inválida/i);
+  expect(casasNoEstado('meu', 'navio')).toHaveLength(5);
+
+  // Sem clicar em frota-D de novo: o D continua selecionado, então G2 é tentado e aceito (G2 e H2 não encostam em nada).
+  await user.click(meu('G2'));
+  expect(meu('G2')).toHaveAttribute('data-estado', 'navio');
+  expect(meu('H2')).toHaveAttribute('data-estado', 'navio');
+  // 5 casas do P + 2 do D.
+  expect(casasNoEstado('meu', 'navio')).toHaveLength(7);
+  // O D saiu da lista.
+  expect(screen.queryByTestId('frota-D')).not.toBeInTheDocument();
+});
