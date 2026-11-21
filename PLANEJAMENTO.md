@@ -198,9 +198,9 @@ Cada integrante é **dono de arquivos de teste diferentes** (coluna "Arquivos").
 |---|---|---|---|
 | **A1** Setup: `package.json`, `babel.config.cjs`, `js/main.js` vazio, `.gitignore`, `index.html` esqueleto, `tests/helpers.js`, verificador, skill, sub-agentes e hooks, PLANEJAMENTO e docs | `main` (repositório vazio, commit direto) | tudo | — |
 | **A2** Tabuleiros e frota | `henrique/a2-tabuleiros` | tests/montagem-da-frota.spec.js | 01, 02, 12 |
-| **A3** Posicionar, girar e devolver | `henrique/a3-posicionar` | tests/montagem-da-frota.spec.js | 03, 04, 09 |
-| **A4** Posições inválidas (sair, sobrepor, encostar) | `henrique/a4-invalidas` | tests/montagem-da-frota.spec.js | 05, 06, 07, 08 |
-| **A5** Começar e aleatório | `henrique/a5-aleatorio` | tests/montagem-da-frota.spec.js | 10, 11 |
+| **A3** Posicionar, girar e devolver | `henrique/a3-posicionar` | tests/montagem-da-frota.spec.js | 03, 04, 09 + adicionais 32, 33 |
+| **A4** Posições inválidas (sair, sobrepor, encostar) | `henrique/a4-invalidas` | tests/montagem-da-frota.spec.js | 05, 06, 07, 08 + adicional 31 |
+| **A5** Começar e aleatório | `henrique/a5-aleatorio` | tests/montagem-da-frota.spec.js | 10, 11 + adicionais 34, 35 |
 
 ### Felipe (tarefas F)
 
@@ -270,6 +270,8 @@ Todos com `CENARIO_BATALHA` (`?jogador=FROTA_FIXA&cpu=FROTA_FIXA&tiros-cpu=AGUA_
 | TC-NV-31 | Limites do tabuleiro (parametrizado) | Posicionar P em A7, V (iria até A11); ou P em F1, H (cabe exato até J1); ou P em A6, V (cabe exato até A10) | A7, V: recusado, 0 casas `navio`, `mensagem` contém "inválida", `frota-P` continua na lista. F1, H: `meu-F1` a `meu-J1` = `navio`. A6, V: `meu-A6` a `meu-A10` = `navio`. Nos aceitos: exatamente 5 casas `navio` e `frota-P` sai da página |
 | TC-NV-32 | Reposicionar um navio devolvido | Posicionar P em A1, H; clicar `meu-C1` (devolve); posicionar P em A3, H | `meu-A1` a `meu-E1` = `agua`; `meu-A3` a `meu-E3` = `navio`; exatamente 5 casas `navio`; `frota-P` sai da página |
 | TC-NV-33 | Orientação alterna nos dois sentidos | Clicar `btn-orientacao` duas vezes; clicar `frota-E` e `meu-A1` | `btn-orientacao` = "Vertical" depois do 1º clique e "Horizontal" depois do 2º; `meu-A1` a `meu-D1` = `navio`; `meu-A2` = `agua`; exatamente 4 casas `navio` |
+| TC-NV-34 | Aleatório substitui a frota, não soma | Posicionar P em A1, H; clicar `btn-aleatorio` duas vezes | Depois de cada clique: exatamente 14 casas `navio`; os grupos de casas `navio` que se tocam (inclusive na diagonal) são 4, com tamanhos 2, 3, 4 e 5; a lista de navios fica vazia; `btn-comecar` habilitado |
+| TC-NV-35 | Parâmetro `jogador` monta a sua frota e pula para a batalha | `?jogador=FROTA_FIXA&cpu=FROTA_FIXA`. Abrir a página; atirar em `alvo-J10` | Exatamente as 14 casas da `FROTA_FIXA` em `meu-*` = `navio` (`A1`–`A5`, `C1`–`C4`, `E1`–`E3`, `G1`–`G2`); a lista de navios fica vazia; `vez` = "Você"; o tiro em `alvo-J10` é aceito (vira `erro`) |
 
 ## 6. Fluxo de trabalho no Git
 
