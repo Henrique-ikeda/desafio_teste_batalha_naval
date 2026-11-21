@@ -19,7 +19,7 @@ Regras completas, contrato da tela e divisão das tarefas: [PLANEJAMENTO.md](PLA
 
 | Nome | RA | GitHub | Parte no trabalho |
 |---|---|---|---|
-| Henrique Kendi Ikeda | 24039456-2 | [Henrique-ikeda](https://github.com/Henrique-ikeda) | Tarefas A1–A5: estrutura do projeto e 12 casos de teste (tabuleiros, montagem da frota, regra de não encostar e aleatório) |
+| Henrique Kendi Ikeda | 24039456-2 | [Henrique-ikeda](https://github.com/Henrique-ikeda) | Tarefas A1–A5: estrutura do projeto, 12 casos de teste do plano (tabuleiros, montagem da frota, regra de não encostar e aleatório) e casos adicionais a partir do TC-NV-31 |
 | Felipe Galeti Gôngora | 24036480-2 | [FGaleti](https://github.com/FGaleti) | Tarefas F1–F5: CI, README, 12 casos de teste do plano (tiros, quem acerta joga de novo, afundar, estatísticas, vitória, derrota e nova partida) e casos adicionais a partir do TC-NV-25 |
 
 As contribuições de cada um aparecem em **Insights → Contributors** e nos commits: cada caso de teste tem o seu commit `test: TC-NV-NN ...`, feito da conta de quem o escreveu, e chega à `main` por Pull Request revisado pelo outro integrante.
@@ -50,7 +50,7 @@ npx jest tests/<arquivo>.spec.js -t "TC-NV-NN"   # um caso só
 - **Metodologia:** TDD, um caso de teste por vez: escrever, rodar, ver falhar pelo motivo certo e fazer o commit `test:`. Uso de IA documentado em [docs/TDD-COM-IA.md](docs/TDD-COM-IA.md).
 - **Integração contínua:** o GitHub Actions ([`.github/workflows/testes.yml`](.github/workflows/testes.yml)) roda `npm ci` e `npm run verificar` em todo push e Pull Request, com Node 18, 20 e 22 no Ubuntu e no Windows, e guarda como artefato o relatório JSON do Jest e a saída do verificador. Na entrega, o job `verificar-completo` (rodado à mão ou num PR com o rótulo `entrega`) roda `npm run verificar:completo`, que também exige um teste para cada caso da tabela abaixo.
 
-## Casos de teste (28)
+## Casos de teste (34)
 
 | ID | Cenário | Arquivo | Resultado esperado | Autor |
 |---|---|---|---|---|
@@ -82,6 +82,12 @@ npx jest tests/<arquivo>.spec.js -t "TC-NV-NN"   # um caso só
 | TC-NV-26 | Computador afunda um navio seu | `tests/tiros.spec.js` | `meu-G1` e `meu-G2` = `afundado`; `meu-I1` = `erro`; `placar-meus` = 3; `vez` = "Você" | Felipe |
 | TC-NV-27 | Derrota bloqueia novos tiros | `tests/fim-de-jogo.spec.js` | `alvo-J9` não vira `erro` (continua `oculto`: não tem navio); `tiros` continua 1; `mensagem` continua "Você perdeu!" | Felipe |
 | TC-NV-28 | Derrota revela só os navios que sobraram | `tests/fim-de-jogo.spec.js` | `mensagem` = "Você perdeu!"; `alvo-G1` e `alvo-G2` continuam `afundado`; as outras 12 casas da frota do computador aparecem como `navio`; `placar-cpu` = 3 | Felipe |
+| TC-NV-31 | Limites do tabuleiro (parametrizado) | `tests/montagem-da-frota.spec.js` | A7, V: recusado, 0 casas `navio`, `mensagem` contém "inválida", `frota-P` continua na lista. F1, H: `meu-F1` a `meu-J1` = `navio`. A6, V: `meu-A6` a `meu-A10` = `navio`. Nos aceitos: exatamente 5 casas `navio` e `frota-P` sai da página | Henrique |
+| TC-NV-32 | Reposicionar um navio devolvido | `tests/montagem-da-frota.spec.js` | `meu-A1` a `meu-E1` = `agua`; `meu-A3` a `meu-E3` = `navio`; exatamente 5 casas `navio`; `frota-P` sai da página | Henrique |
+| TC-NV-33 | Orientação alterna nos dois sentidos | `tests/montagem-da-frota.spec.js` | `btn-orientacao` = "Vertical" depois do 1º clique e "Horizontal" depois do 2º; `meu-A1` a `meu-D1` = `navio`; `meu-A2` = `agua`; exatamente 4 casas `navio` | Henrique |
+| TC-NV-34 | Aleatório substitui a frota, não soma | `tests/montagem-da-frota.spec.js` | Depois de cada clique: exatamente 14 casas `navio`; os grupos de casas `navio` que se tocam (inclusive na diagonal) são 4, com tamanhos 2, 3, 4 e 5; a lista de navios fica vazia; `btn-comecar` habilitado | Henrique |
+| TC-NV-35 | Parâmetro `jogador` monta a sua frota e pula para a batalha | `tests/montagem-da-frota.spec.js` | Exatamente as 14 casas da `FROTA_FIXA` em `meu-*` = `navio` (`A1`–`A5`, `C1`–`C4`, `E1`–`E3`, `G1`–`G2`); a lista de navios fica vazia; `vez` = "Você"; o tiro em `alvo-J10` é aceito (vira `erro`) | Henrique |
+| TC-NV-36 | Encostar na ponta, na mesma linha | `tests/montagem-da-frota.spec.js` | Recusado: `meu-F1` e `meu-G1` continuam `agua`; exatamente 5 casas `navio` (só o P); `mensagem` contém "inválida"; `frota-D` continua na lista | Henrique |
 
 ## Estrutura
 
