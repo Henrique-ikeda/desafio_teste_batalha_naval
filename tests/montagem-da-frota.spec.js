@@ -1,5 +1,8 @@
 // Tarefas A2–A5 (Henrique). Contrato: seções 1, 3 e 5 do PLANEJAMENTO.md.
-import { abrirJogo, alvo, casasDe, casasNoEstado, meu, screen, TODAS_AS_CASAS, within } from './helpers.js';
+import { abrirJogo, alvo, casasDe, casasNoEstado, FROTA_FIXA, meu, screen, TODAS_AS_CASAS, TODAS_CASAS_FROTA_FIXA, within } from './helpers.js';
+
+// Só a frota do computador é fixa (FROTA_FIXA: P em A1–A5, E em C1–C4, S em E1–E3, D em G1–G2); a sua sai do Aleatório.
+const SO_CPU_FIXA = { cpu: FROTA_FIXA };
 
 test('TC-NV-01 dois tabuleiros 10 × 10', async () => {
   await abrirJogo();
@@ -31,4 +34,22 @@ test('TC-NV-02 lista da frota', async () => {
   }
   expect(screen.getByTestId('btn-orientacao')).toHaveTextContent(/^Horizontal$/);
   expect(screen.getByTestId('btn-comecar')).toBeDisabled();
+});
+
+test('TC-NV-12 frota do computador escondida', async () => {
+  const user = await abrirJogo(SO_CPU_FIXA);
+  await user.click(screen.getByTestId('btn-aleatorio'));
+  expect(screen.getByTestId('btn-comecar')).toBeEnabled();
+  await user.click(screen.getByTestId('btn-comecar'));
+
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Você$/);
+  expect(casasNoEstado('alvo', 'oculto')).toHaveLength(100);
+  expect(casasNoEstado('alvo', 'navio')).toHaveLength(0);
+  for (const casa of TODAS_CASAS_FROTA_FIXA) {
+    expect(alvo(casa)).toHaveAttribute('data-estado', 'oculto');
+  }
+
+  await user.click(alvo('A1'));
+  expect(alvo('A1')).toHaveAttribute('data-estado', 'acerto');
+  expect(casasNoEstado('alvo', 'oculto')).toHaveLength(99);
 });
