@@ -22,12 +22,14 @@ Batalha naval em tabuleiro **10 × 10**, jogador contra o computador, com 1 port
   | Destroier (ou Hidroavião) | D | 2 |
 
 - **Fase 1 — montagem da frota:** o jogador clica num navio da lista, escolhe a orientação (**Horizontal** = para a direita, **Vertical** = para baixo) e clica na casa inicial do seu tabuleiro.
-  - O navio **não pode** sair do tabuleiro, ficar em cima de outro nem **encostar** em outro navio, nem de lado nem na **diagonal** (tem que sobrar pelo menos uma casa de água em volta). Posição recusada: nada muda e a mensagem avisa com a palavra "inválida".
-  - Clicar num navio já posicionado (sem nenhum navio da lista selecionado) **devolve** o navio para a lista.
+  - O navio **não pode** sair do tabuleiro, ficar em cima de outro nem **encostar** em outro navio, nem de lado nem na **diagonal** (tem que sobrar pelo menos uma casa de água em volta). Posição recusada: nada muda, o navio **continua selecionado** (basta clicar em outra casa) e a mensagem avisa com a palavra "inválida". Quando um navio é posicionado, essa mensagem **é apagada**.
+  - Clicar num navio já posicionado (sem nenhum navio da lista selecionado) **devolve** o navio para a lista. **Com** um navio da lista selecionado, o clique é uma tentativa de posicionar o selecionado ali: ficaria em cima do outro, então é recusado ("inválida") e nada é devolvido.
   - **Aleatório** tira o que já estava e posiciona os 4 navios seguindo as mesmas regras.
   - **Começar** só fica habilitado com os 4 navios posicionados.
+  - Durante a montagem, clicar no alvo não faz nada (não existe tiro antes de Começar).
 - O computador monta a frota dele em segredo, com as mesmas regras. Os navios dele ficam escondidos.
 - **Fase 2 — batalha:** o jogador atira clicando numa casa do alvo.
+  - A montagem acabou: clicar no seu tabuleiro não faz nada (nenhum navio é devolvido) e `btn-aleatorio` e `btn-orientacao` ficam desabilitados.
   - **Acertou** (casa com navio): mensagem "Acertou!" e o jogador **atira de novo**.
   - **Água:** mensagem "Água!" e a vez passa para o computador, que atira no seu tabuleiro seguindo a mesma regra (acertou, atira de novo; errou, a vez volta para você).
   - Quando todas as casas de um navio foram atingidas, ele **afunda**: suas casas viram "afundado" e a mensagem diz "Afundou o *Nome*!" (ex.: "Afundou o Destroier!").
@@ -201,6 +203,7 @@ Cada integrante é **dono de arquivos de teste diferentes** (coluna "Arquivos").
 | **A3** Posicionar, girar e devolver | `henrique/a3-posicionar` | tests/montagem-da-frota.spec.js | 03, 04, 09 + adicionais 32, 33 |
 | **A4** Posições inválidas (sair, sobrepor, encostar) | `henrique/a4-invalidas` | tests/montagem-da-frota.spec.js | 05, 06, 07, 08 + adicional 31 |
 | **A5** Começar e aleatório | `henrique/a5-aleatorio` | tests/montagem-da-frota.spec.js | 10, 11 + adicionais 34, 35, 36 |
+| **A6** Regras pendentes (achados da validação, seção 1) | `henrique/a6-regras-pendentes` | tests/montagem-da-frota.spec.js | adicionais 37, 38, 39, 40, 41 |
 
 ### Felipe (tarefas F)
 
@@ -231,7 +234,7 @@ Cada integrante é **dono de arquivos de teste diferentes** (coluna "Arquivos").
 | TC-NV-07 | Encostar de lado | Posicionar P em A1, H; depois E em A2, H | Só as 5 casas do P = `navio`; `mensagem` contém "inválida"; `frota-E` continua |
 | TC-NV-08 | Encostar na diagonal | Posicionar P em A1, H; D em F2, H (F2 encosta em E1 na diagonal); depois D em G2, H | Em F2: recusado, "inválida", `frota-D` continua. Em G2: aceito, `meu-G2` e `meu-H2` = `navio` |
 | TC-NV-09 | Devolver um navio | Posicionar P em A1, H; clicar `meu-C1` | `meu-A1` a `meu-E1` voltam a `agua`; `frota-P` volta para a lista |
-| TC-NV-10 | Começar só com a frota completa | Posicionar P em A1, H; E em A3, H; S em A5, H → conferir; D em A7, H → conferir | `btn-comecar` desabilitado com 3 navios; habilitado com 4 |
+| TC-NV-10 | Começar só com a frota completa | Posicionar P em A1, H; E em A3, H; S em A5, H → conferir `btn-comecar` (12 casas `navio`); D em A7, H → conferir de novo (14 casas `navio`) | `btn-comecar` desabilitado com 3 navios; habilitado com 4 |
 | TC-NV-11 | Aleatório respeita as regras | 10 vezes: clicar `btn-aleatorio` | A cada vez: exatamente 14 casas `navio`; os grupos de casas `navio` que se tocam (inclusive na diagonal) são 4, com tamanhos 2, 3, 4 e 5; a lista de navios fica vazia; `btn-comecar` habilitado |
 | TC-NV-12 | Frota do computador escondida | `?cpu=FROTA_FIXA`. Clicar `btn-aleatorio`, `btn-comecar`; depois atirar em `alvo-A1` | Antes do tiro: `vez` = "Você" e as 100 casas do alvo `oculto`, inclusive as 14 da frota. O tiro em A1 dá `acerto` (o navio estava lá, escondido) |
 
@@ -275,6 +278,11 @@ Todos com `CENARIO_BATALHA` (`?jogador=FROTA_FIXA&cpu=FROTA_FIXA&tiros-cpu=AGUA_
 | TC-NV-34 | Aleatório substitui a frota, não soma | Posicionar P em A1, H; clicar `btn-aleatorio` duas vezes | Depois de cada clique: exatamente 14 casas `navio`; os grupos de casas `navio` que se tocam (inclusive na diagonal) são 4, com tamanhos 2, 3, 4 e 5; a lista de navios fica vazia; `btn-comecar` habilitado |
 | TC-NV-35 | Parâmetro `jogador` monta a sua frota e pula para a batalha | `?jogador=FROTA_FIXA&cpu=FROTA_FIXA`. Abrir a página; atirar em `alvo-J10` | Exatamente as 14 casas da `FROTA_FIXA` em `meu-*` = `navio` (`A1`–`A5`, `C1`–`C4`, `E1`–`E3`, `G1`–`G2`); a lista de navios fica vazia; `vez` = "Você"; o tiro em `alvo-J10` é aceito (vira `erro`) |
 | TC-NV-36 | Encostar na ponta, na mesma linha | Posicionar P em A1, H; depois D em F1, H (F1 encosta em E1 só pelo lado, sem diagonal) | Recusado: `meu-F1` e `meu-G1` continuam `agua`; exatamente 5 casas `navio` (só o P); `mensagem` contém "inválida"; `frota-D` continua na lista |
+| TC-NV-37 | Navio continua selecionado depois da recusa | Posicionar P em A1, H; clicar `frota-D` e `meu-F2` (recusado: encosta em E1 na diagonal); sem clicar `frota-D` de novo, clicar `meu-G2` | Depois de F2: `mensagem` contém "inválida" e exatamente 5 casas `navio`. Depois de G2: `meu-G2` e `meu-H2` = `navio`; exatamente 7 casas `navio`; `frota-D` sai da página |
+| TC-NV-38 | Mensagem "inválida" some ao posicionar | Posicionar P em A1, H; D em F2, H (recusado); D em G2, H | Depois de F2: `mensagem` contém "inválida". Depois de G2: `meu-G2` = `navio` e `mensagem` não contém mais "inválida" |
+| TC-NV-39 | Clicar num navio posicionado com outro selecionado | Posicionar P em A1, H; clicar `frota-E`; clicar `meu-A1` | `meu-A1` a `meu-E1` continuam `navio`; exatamente 5 casas `navio`; `frota-P` não volta (fora da página); `frota-E` continua na lista; `mensagem` contém "inválida" |
+| TC-NV-40 | Montagem acaba ao Começar | `?cpu=FROTA_FIXA`. Clicar `btn-aleatorio` e `btn-comecar`; clicar uma casa `navio` do seu tabuleiro | `vez` = "Você"; continua com exatamente 14 casas `navio` e nenhum `frota-*` na página; `btn-aleatorio` e `btn-orientacao` desabilitados |
+| TC-NV-41 | Tiro antes de Começar não faz nada | `?cpu=FROTA_FIXA`. Clicar `alvo-A1`; depois `btn-aleatorio`, `btn-comecar` e `alvo-A1` de novo | Antes de Começar: `alvo-A1` = `oculto` (100 casas `oculto`) e `frota-P` na lista. Depois de Começar: o tiro em `alvo-A1` vale e dá `acerto` |
 
 ## 6. Fluxo de trabalho no Git
 

@@ -432,3 +432,105 @@ test('TC-NV-36 encostar na ponta, na mesma linha', async () => {
   // O D continua na lista de navios a posicionar.
   expect(within(screen.getByTestId('lista-frota')).getByTestId('frota-D')).toBeVisible();
 });
+
+test('TC-NV-37 navio continua selecionado depois da recusa', async () => {
+  const user = await abrirJogo();
+  // P (5 casas) em A1 para a direita: A1 a E1.
+  await posicionar(user, 'P', 'A1', 'H');
+
+  // D selecionado (clique à mão, sem o helper posicionar) e F2 tentado: F2 encosta em E1 na diagonal, então é recusado.
+  await user.click(screen.getByTestId('frota-D'));
+  await user.click(meu('F2'));
+  // Recusado: a mensagem avisa com "inválida" e só as 5 casas do P são navio.
+  expect(screen.getByTestId('mensagem')).toHaveTextContent(/inválida/i);
+  expect(casasNoEstado('meu', 'navio')).toHaveLength(5);
+
+  // Sem clicar em frota-D de novo: o D continua selecionado, então G2 é tentado e aceito (G2 e H2 não encostam em nada).
+  await user.click(meu('G2'));
+  expect(meu('G2')).toHaveAttribute('data-estado', 'navio');
+  expect(meu('H2')).toHaveAttribute('data-estado', 'navio');
+  // 5 casas do P + 2 do D.
+  expect(casasNoEstado('meu', 'navio')).toHaveLength(7);
+  // O D saiu da lista.
+  expect(screen.queryByTestId('frota-D')).not.toBeInTheDocument();
+});
+
+test('TC-NV-38 mensagem "inválida" some ao posicionar', async () => {
+  const user = await abrirJogo();
+  // P (5 casas) em A1 para a direita: A1 a E1.
+  await posicionar(user, 'P', 'A1', 'H');
+  // D (2 casas) em F2 para a direita: F2 encosta em E1 só na diagonal, então é recusado e a mensagem avisa.
+  await posicionar(user, 'D', 'F2', 'H');
+  expect(screen.getByTestId('mensagem')).toHaveTextContent(/inválida/i);
+
+  // D em G2 para a direita: G2 e H2 não encostam em nada, então são aceitos.
+  await posicionar(user, 'D', 'G2', 'H');
+  // Conferência positiva primeiro: o D foi posicionado em G2.
+  expect(meu('G2')).toHaveAttribute('data-estado', 'navio');
+  // Ao posicionar um navio, a mensagem "inválida" é apagada.
+  expect(screen.getByTestId('mensagem')).not.toHaveTextContent(/inválida/i);
+});
+
+test('TC-NV-39 clicar num navio posicionado com outro selecionado', async () => {
+  const user = await abrirJogo();
+  // P (5 casas) em A1 para a direita: A1 a E1.
+  await posicionar(user, 'P', 'A1', 'H');
+
+  // E selecionado (clique à mão) e clicado em A1: tentativa de pôr o E em cima do P, então é recusado e nada é devolvido.
+  await user.click(screen.getByTestId('frota-E'));
+  await user.click(meu('A1'));
+
+  // As 5 casas do P continuam navio, e só elas.
+  for (const casa of ['A1', 'B1', 'C1', 'D1', 'E1']) {
+    expect(meu(casa)).toHaveAttribute('data-estado', 'navio');
+  }
+  expect(casasNoEstado('meu', 'navio')).toHaveLength(5);
+  // A mensagem avisa com "inválida" (regex sem âncora: a frase pode ter mais texto).
+  expect(screen.getByTestId('mensagem')).toHaveTextContent(/inválida/i);
+  // O E continua na lista de navios a posicionar.
+  expect(within(screen.getByTestId('lista-frota')).getByTestId('frota-E')).toBeVisible();
+  // O P não foi devolvido: continua fora da lista.
+  expect(screen.queryByTestId('frota-P')).not.toBeInTheDocument();
+});
+
+test('TC-NV-40 montagem acaba ao Começar', async () => {
+  const user = await abrirJogo(SO_CPU_FIXA);
+  await user.click(screen.getByTestId('btn-aleatorio'));
+  await user.click(screen.getByTestId('btn-comecar'));
+
+  // Prova que a batalha começou.
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Você$/);
+
+  // A frota é aleatória: pega a primeira casa com navio do seu tabuleiro.
+  const casaComNavio = casasNoEstado('meu', 'navio')[0];
+  await user.click(casaComNavio);
+
+  // Clicar no seu tabuleiro depois de Começar não devolve navio: continuam 14 casas e nenhum frota-* na página.
+  expect(casasNoEstado('meu', 'navio')).toHaveLength(14);
+  for (const l of ['P', 'E', 'S', 'D']) {
+    expect(screen.queryByTestId(`frota-${l}`)).not.toBeInTheDocument();
+  }
+
+  // A montagem acabou: aleatório e orientação ficam desabilitados.
+  expect(screen.getByTestId('btn-aleatorio')).toBeDisabled();
+  expect(screen.getByTestId('btn-orientacao')).toBeDisabled();
+});
+
+test('TC-NV-41 tiro antes de Começar não faz nada', async () => {
+  const user = await abrirJogo(SO_CPU_FIXA);
+  // Tiro em A1 ainda na montagem (antes de Começar).
+  await user.click(alvo('A1'));
+
+  // Antes de Começar: o P continua na lista (ainda na montagem) e nenhuma casa do alvo mudou.
+  expect(within(screen.getByTestId('lista-frota')).getByTestId('frota-P')).toBeVisible();
+  expect(alvo('A1')).toHaveAttribute('data-estado', 'oculto');
+  expect(casasNoEstado('alvo', 'oculto')).toHaveLength(100);
+
+  // Monta a frota pelo Aleatório e começa a batalha.
+  await user.click(screen.getByTestId('btn-aleatorio'));
+  await user.click(screen.getByTestId('btn-comecar'));
+  await user.click(alvo('A1'));
+
+  // Depois de Começar: o tiro em A1 vale (A1 é navio da CPU), então o clique de antes não contou como tiro já dado.
+  expect(alvo('A1')).toHaveAttribute('data-estado', 'acerto');
+});
