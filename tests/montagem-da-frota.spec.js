@@ -470,3 +470,25 @@ test('TC-NV-38 mensagem "inválida" some ao posicionar', async () => {
   // Ao posicionar um navio, a mensagem "inválida" é apagada.
   expect(screen.getByTestId('mensagem')).not.toHaveTextContent(/inválida/i);
 });
+
+test('TC-NV-39 clicar num navio posicionado com outro selecionado', async () => {
+  const user = await abrirJogo();
+  // P (5 casas) em A1 para a direita: A1 a E1.
+  await posicionar(user, 'P', 'A1', 'H');
+
+  // E selecionado (clique à mão) e clicado em A1: tentativa de pôr o E em cima do P, então é recusado e nada é devolvido.
+  await user.click(screen.getByTestId('frota-E'));
+  await user.click(meu('A1'));
+
+  // As 5 casas do P continuam navio, e só elas.
+  for (const casa of ['A1', 'B1', 'C1', 'D1', 'E1']) {
+    expect(meu(casa)).toHaveAttribute('data-estado', 'navio');
+  }
+  expect(casasNoEstado('meu', 'navio')).toHaveLength(5);
+  // A mensagem avisa com "inválida" (regex sem âncora: a frase pode ter mais texto).
+  expect(screen.getByTestId('mensagem')).toHaveTextContent(/inválida/i);
+  // O E continua na lista de navios a posicionar.
+  expect(within(screen.getByTestId('lista-frota')).getByTestId('frota-E')).toBeVisible();
+  // O P não foi devolvido: continua fora da lista.
+  expect(screen.queryByTestId('frota-P')).not.toBeInTheDocument();
+});
