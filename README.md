@@ -87,5 +87,5 @@ tests/helpers.js              abrirJogo(), FROTA_FIXA e atalhos
 tests/*.spec.js               casos de teste
 scripts/verificar-testes.mjs  verificador (npm run verificar e CI)
 PLANEJAMENTO.md               regras, contrato, tarefas e casos de teste
-docs/                         matriz de cobertura e TDD com IA
+docs/                         matriz de cobertura, TDD com IA e validação dos testes (VALIDACAO-TESTES-FELIPE.md)
 ```
