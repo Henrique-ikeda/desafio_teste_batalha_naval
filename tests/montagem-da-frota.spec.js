@@ -515,3 +515,22 @@ test('TC-NV-40 montagem acaba ao Começar', async () => {
   expect(screen.getByTestId('btn-aleatorio')).toBeDisabled();
   expect(screen.getByTestId('btn-orientacao')).toBeDisabled();
 });
+
+test('TC-NV-41 tiro antes de Começar não faz nada', async () => {
+  const user = await abrirJogo(SO_CPU_FIXA);
+  // Tiro em A1 ainda na montagem (antes de Começar).
+  await user.click(alvo('A1'));
+
+  // Antes de Começar: o P continua na lista (ainda na montagem) e nenhuma casa do alvo mudou.
+  expect(within(screen.getByTestId('lista-frota')).getByTestId('frota-P')).toBeVisible();
+  expect(alvo('A1')).toHaveAttribute('data-estado', 'oculto');
+  expect(casasNoEstado('alvo', 'oculto')).toHaveLength(100);
+
+  // Monta a frota pelo Aleatório e começa a batalha.
+  await user.click(screen.getByTestId('btn-aleatorio'));
+  await user.click(screen.getByTestId('btn-comecar'));
+  await user.click(alvo('A1'));
+
+  // Depois de Começar: o tiro em A1 vale (A1 é navio da CPU), então o clique de antes não contou como tiro já dado.
+  expect(alvo('A1')).toHaveAttribute('data-estado', 'acerto');
+});
