@@ -412,3 +412,23 @@ test('TC-NV-35 parâmetro jogador monta a sua frota e pula para a batalha', asyn
   await user.click(alvo('J10'));
   expect(alvo('J10')).toHaveAttribute('data-estado', 'erro');
 });
+
+test('TC-NV-36 encostar na ponta, na mesma linha', async () => {
+  const user = await abrirJogo();
+  // P (5 casas) em A1 para a direita: A1 a E1.
+  await posicionar(user, 'P', 'A1', 'H');
+  // D (2 casas) em F1 para a direita: F1 e G1. F1 encosta em E1 só pelo lado (ponta com ponta), então é recusado.
+  await posicionar(user, 'D', 'F1', 'H');
+
+  // Recusado: F1 e G1 continuam água e só as 5 casas do P são navio.
+  expect(meu('F1')).toHaveAttribute('data-estado', 'agua');
+  expect(meu('G1')).toHaveAttribute('data-estado', 'agua');
+  for (const casa of ['A1', 'B1', 'C1', 'D1', 'E1']) {
+    expect(meu(casa)).toHaveAttribute('data-estado', 'navio');
+  }
+  expect(casasNoEstado('meu', 'navio')).toHaveLength(5);
+  // A mensagem avisa com "inválida" (regex sem âncora: a frase pode ter mais texto).
+  expect(screen.getByTestId('mensagem')).toHaveTextContent(/inválida/i);
+  // O D continua na lista de navios a posicionar.
+  expect(within(screen.getByTestId('lista-frota')).getByTestId('frota-D')).toBeVisible();
+});
