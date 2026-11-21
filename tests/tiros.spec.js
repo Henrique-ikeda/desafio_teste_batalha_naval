@@ -9,6 +9,8 @@ import { abrirJogo, alvo, meu, screen, casasNoEstado, CENARIO_BATALHA } from './
 const ESPERA = { timeout: 5000 };
 /** Casas já atingidas de um lado (erro + acerto + afundado). */
 const atingidas = (lado) => ['erro', 'acerto', 'afundado'].reduce((n, e) => n + casasNoEstado(lado, e).length, 0);
+// O computador acerta A1 e A2 (porta-aviões, 5 casas: não afunda) e erra em I1.
+const CPU_ACERTA_DUAS = { ...CENARIO_BATALHA, 'tiros-cpu': 'A1,A2,I1' };
 
 test('TC-NV-13 água', async () => {
   const user = await abrirJogo(CENARIO_BATALHA);
@@ -59,6 +61,19 @@ test('TC-NV-16 água passa a vez', async () => {
   }, ESPERA);
   expect(atingidas('meu')).toBe(1);
   expect(meu('I2')).toHaveAttribute('data-estado', 'agua');
+});
+
+test('TC-NV-17 computador acerta e repete', async () => {
+  const user = await abrirJogo(CPU_ACERTA_DUAS);
+  await user.click(alvo('J10'));
+  await waitFor(() => {
+    expect(meu('I1')).toHaveAttribute('data-estado', 'erro');
+    expect(screen.getByTestId('vez')).toHaveTextContent(/^Você$/);
+  }, ESPERA);
+  expect(meu('A1')).toHaveAttribute('data-estado', 'acerto');
+  expect(meu('A2')).toHaveAttribute('data-estado', 'acerto');
+  expect(atingidas('meu')).toBe(3);
+  expect(meu('A3')).toHaveAttribute('data-estado', 'navio');
 });
 
 test('TC-NV-18 casa repetida não conta', async () => {
