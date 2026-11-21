@@ -2,7 +2,7 @@
 // Cenário padrão: CENARIO_BATALHA = as duas frotas fixas (FROTA_FIXA: P em A1–A5, E em C1–C4,
 // S em E1–E3, D em G1–G2) e o computador atirando primeiro nas casas de AGUA_CPU (I1, I2, …: sempre água).
 import { waitFor } from '@testing-library/dom';
-import { abrirJogo, alvo, screen, CENARIO_BATALHA } from './helpers.js';
+import { abrirJogo, alvo, meu, screen, casasNoEstado, CENARIO_BATALHA } from './helpers.js';
 
 // A spec não diz se o computador atira na hora ou com atraso: tudo que depende do tiro dele
 // é conferido com waitFor, para o teste valer nas duas implementações.
@@ -33,4 +33,19 @@ test('TC-NV-23 estatísticas', async () => {
   }, ESPERA);
   expect(screen.getByTestId('tiros')).toHaveTextContent(/^2$/);
   expect(screen.getByTestId('acertos')).toHaveTextContent(/^1$/);
+});
+
+test('TC-NV-18 casa repetida não conta', async () => {
+  const user = await abrirJogo(CENARIO_BATALHA);
+  await user.click(alvo('J10'));
+  await waitFor(() => {
+    expect(meu('I1')).toHaveAttribute('data-estado', 'erro');
+    expect(screen.getByTestId('vez')).toHaveTextContent(/^Você$/);
+  }, ESPERA);
+  await user.click(alvo('J10'));
+  expect(alvo('J10')).toHaveAttribute('data-estado', 'erro');
+  expect(screen.getByTestId('tiros')).toHaveTextContent(/^1$/);
+  expect(casasNoEstado('meu', 'erro')).toHaveLength(1);
+  expect(meu('I2')).toHaveAttribute('data-estado', 'agua');
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Você$/);
 });
