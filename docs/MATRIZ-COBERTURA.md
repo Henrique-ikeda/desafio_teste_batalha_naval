@@ -21,5 +21,9 @@ Cada regra da seção 1 do PLANEJAMENTO.md (e o parâmetro `jogador` do contrato
 | 15 | Vitória, derrota (revela a frota do computador), nada depois do fim (nos dois casos) | 21, 22, 27, 28 |
 | 16 | Nova partida volta à montagem | 24 |
 | 17 | Parâmetro `jogador` (contrato da seção 3) monta a sua frota e vai direto para a batalha | 35 |
+| 18 | Navio continua selecionado depois da recusa; a mensagem "inválida" some ao posicionar | 37, 38 |
+| 19 | Clicar num navio posicionado com outro selecionado é recusado (não devolve) | 39 |
+| 20 | Depois de Começar a montagem acaba (tabuleiro, Aleatório e Orientação) | 40 |
+| 21 | Sem tiro antes de Começar | 41 |
 
 **Para que serve:** se alguém fosse implementar o jogo só a partir destes testes, toda regra do jogo teria um teste exigindo que ela exista.
