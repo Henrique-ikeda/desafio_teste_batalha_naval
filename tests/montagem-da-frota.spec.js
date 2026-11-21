@@ -454,3 +454,19 @@ test('TC-NV-37 navio continua selecionado depois da recusa', async () => {
   // O D saiu da lista.
   expect(screen.queryByTestId('frota-D')).not.toBeInTheDocument();
 });
+
+test('TC-NV-38 mensagem "inválida" some ao posicionar', async () => {
+  const user = await abrirJogo();
+  // P (5 casas) em A1 para a direita: A1 a E1.
+  await posicionar(user, 'P', 'A1', 'H');
+  // D (2 casas) em F2 para a direita: F2 encosta em E1 só na diagonal, então é recusado e a mensagem avisa.
+  await posicionar(user, 'D', 'F2', 'H');
+  expect(screen.getByTestId('mensagem')).toHaveTextContent(/inválida/i);
+
+  // D em G2 para a direita: G2 e H2 não encostam em nada, então são aceitos.
+  await posicionar(user, 'D', 'G2', 'H');
+  // Conferência positiva primeiro: o D foi posicionado em G2.
+  expect(meu('G2')).toHaveAttribute('data-estado', 'navio');
+  // Ao posicionar um navio, a mensagem "inválida" é apagada.
+  expect(screen.getByTestId('mensagem')).not.toHaveTextContent(/inválida/i);
+});
