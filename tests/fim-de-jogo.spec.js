@@ -48,3 +48,21 @@ test('TC-NV-22 derrota', async () => {
   expect(casasNoEstado('alvo', 'navio')).toHaveLength(14);
   expect(alvo('J10')).toHaveAttribute('data-estado', 'erro');
 }, 30_000);
+
+test('TC-NV-24 nova partida', async () => {
+  const user = await abrirJogo(CENARIO_BATALHA);
+  await user.click(alvo('A1'));
+  expect(alvo('A1')).toHaveAttribute('data-estado', 'acerto');
+  expect(texto('tiros')).toHaveTextContent(/^1$/);
+  expect(texto('acertos')).toHaveTextContent(/^1$/);
+  await user.click(screen.getByTestId('btn-nova-partida'));
+  expect(screen.getByTestId('frota-P')).toBeVisible();
+  expect(screen.getByTestId('frota-E')).toBeVisible();
+  expect(screen.getByTestId('frota-S')).toBeVisible();
+  expect(screen.getByTestId('frota-D')).toBeVisible();
+  expect(casasNoEstado('meu', 'agua')).toHaveLength(100);
+  expect(casasNoEstado('alvo', 'oculto')).toHaveLength(100);
+  expect(screen.getByTestId('btn-comecar')).toBeDisabled();
+  expect(texto('tiros')).toHaveTextContent(/^0$/);
+  expect(texto('acertos')).toHaveTextContent(/^0$/);
+});
