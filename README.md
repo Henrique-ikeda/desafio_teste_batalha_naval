@@ -19,7 +19,7 @@ Regras completas, contrato da tela e divisão das tarefas: [PLANEJAMENTO.md](PLA
 
 | Nome | RA | GitHub | Parte no trabalho |
 |---|---|---|---|
-| Henrique Kendi Ikeda | 24039456-2 | [Henrique-ikeda](https://github.com/Henrique-ikeda) | Tarefas A1–A5: estrutura do projeto e 12 casos de teste (tabuleiros, montagem da frota, regra de não encostar e aleatório) |
+| Henrique Kendi Ikeda | 24039456-2 | [Henrique-ikeda](https://github.com/Henrique-ikeda) | Tarefas A1–A5: estrutura do projeto, 12 casos de teste do plano (tabuleiros, montagem da frota, regra de não encostar e aleatório) e casos adicionais a partir do TC-NV-31 |
 | Felipe Galeti Gôngora | 24036480-2 | [FGaleti](https://github.com/FGaleti) | Tarefas F1–F5: CI, README, 12 casos de teste do plano (tiros, quem acerta joga de novo, afundar, estatísticas, vitória, derrota e nova partida) e casos adicionais a partir do TC-NV-25 |
 
 As contribuições de cada um aparecem em **Insights → Contributors** e nos commits: cada caso de teste tem o seu commit `test: TC-NV-NN ...`, feito da conta de quem o escreveu, e chega à `main` por Pull Request revisado pelo outro integrante.
@@ -50,7 +50,7 @@ npx jest tests/<arquivo>.spec.js -t "TC-NV-NN"   # um caso só
 - **Metodologia:** TDD, um caso de teste por vez: escrever, rodar, ver falhar pelo motivo certo e fazer o commit `test:`. Uso de IA documentado em [docs/TDD-COM-IA.md](docs/TDD-COM-IA.md).
 - **Integração contínua:** o GitHub Actions ([`.github/workflows/testes.yml`](.github/workflows/testes.yml)) roda `npm ci` e `npm run verificar` em todo push e Pull Request, com Node 18, 20 e 22 no Ubuntu e no Windows, e guarda como artefato o relatório JSON do Jest e a saída do verificador. Na entrega, o job `verificar-completo` (rodado à mão ou num PR com o rótulo `entrega`) roda `npm run verificar:completo`, que também exige um teste para cada caso da tabela abaixo.
 
-## Casos de teste (28)
+## Casos de teste (30)
 
 | ID | Cenário | Arquivo | Resultado esperado | Autor |
 |---|---|---|---|---|
@@ -82,6 +82,8 @@ npx jest tests/<arquivo>.spec.js -t "TC-NV-NN"   # um caso só
 | TC-NV-26 | Computador afunda um navio seu | `tests/tiros.spec.js` | `meu-G1` e `meu-G2` = `afundado`; `meu-I1` = `erro`; `placar-meus` = 3; `vez` = "Você" | Felipe |
 | TC-NV-27 | Derrota bloqueia novos tiros | `tests/fim-de-jogo.spec.js` | `alvo-J9` não vira `erro` (continua `oculto`: não tem navio); `tiros` continua 1; `mensagem` continua "Você perdeu!" | Felipe |
 | TC-NV-28 | Derrota revela só os navios que sobraram | `tests/fim-de-jogo.spec.js` | `mensagem` = "Você perdeu!"; `alvo-G1` e `alvo-G2` continuam `afundado`; as outras 12 casas da frota do computador aparecem como `navio`; `placar-cpu` = 3 | Felipe |
+| TC-NV-32 | Reposicionar um navio devolvido | `tests/montagem-da-frota.spec.js` | `meu-A1` a `meu-E1` = `agua`; `meu-A3` a `meu-E3` = `navio`; exatamente 5 casas `navio`; `frota-P` sai da página | Henrique |
+| TC-NV-33 | Orientação alterna nos dois sentidos | `tests/montagem-da-frota.spec.js` | `btn-orientacao` = "Vertical" depois do 1º clique e "Horizontal" depois do 2º; `meu-A1` a `meu-D1` = `navio`; `meu-A2` = `agua`; exatamente 4 casas `navio` | Henrique |
 
 ## Estrutura
 

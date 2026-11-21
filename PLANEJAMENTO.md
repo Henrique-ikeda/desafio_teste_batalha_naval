@@ -263,6 +263,13 @@ Todos com `CENARIO_BATALHA` (`?jogador=FROTA_FIXA&cpu=FROTA_FIXA&tiros-cpu=AGUA_
 | TC-NV-27 | Derrota bloqueia novos tiros | `tiros-cpu` = as 14 casas da `FROTA_FIXA` (cenário do TC-NV-22). Atirar em `alvo-J10`; depois de "Você perdeu!", clicar `alvo-J9` | `alvo-J9` não vira `erro` (continua `oculto`: não tem navio); `tiros` continua 1; `mensagem` continua "Você perdeu!" |
 | TC-NV-28 | Derrota revela só os navios que sobraram | `tiros-cpu` = as 14 casas da `FROTA_FIXA`. Atirar em `alvo-G1` e `alvo-G2` (afunda o Destroier) e depois em `alvo-J10` | `mensagem` = "Você perdeu!"; `alvo-G1` e `alvo-G2` continuam `afundado`; as outras 12 casas da frota do computador aparecem como `navio`; `placar-cpu` = 3 |
 
+**Casos adicionais propostos pelo Henrique** (IDs a partir de `TC-NV-31`, seção 4; reforçam regras da montagem da frota que tinham cobertura fina):
+
+| ID | Cenário | Parâmetros / passos | Resultado esperado |
+|---|---|---|---|
+| TC-NV-32 | Reposicionar um navio devolvido | Posicionar P em A1, H; clicar `meu-C1` (devolve); posicionar P em A3, H | `meu-A1` a `meu-E1` = `agua`; `meu-A3` a `meu-E3` = `navio`; exatamente 5 casas `navio`; `frota-P` sai da página |
+| TC-NV-33 | Orientação alterna nos dois sentidos | Clicar `btn-orientacao` duas vezes; clicar `frota-E` e `meu-A1` | `btn-orientacao` = "Vertical" depois do 1º clique e "Horizontal" depois do 2º; `meu-A1` a `meu-D1` = `navio`; `meu-A2` = `agua`; exatamente 4 casas `navio` |
+
 ## 6. Fluxo de trabalho no Git
 
 Para o professor enxergar a contribuição dos dois, **cada um commita da própria conta**:
