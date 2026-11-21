@@ -1,4 +1,4 @@
-# Validação dos casos de teste do Felipe (TC-NV-13 a 27)
+# Validação dos casos de teste do Felipe (TC-NV-13 a 28)
 
 Num repositório "somente testes", ver um teste **falhar pelo motivo certo** não prova que ele está **certo**: um resultado esperado errado também falha. Este documento registra como os testes do Felipe foram validados dos dois lados, sem colocar código do jogo no repositório.
 
@@ -15,31 +15,32 @@ Num repositório "somente testes", ver um teste **falhar pelo motivo certo** nã
 
 | Execução | Resultado |
 |---|---|
-| Referência síncrona | 18/18 testes passaram (os 15 TCs; o TC-NV-20 tem 4 casos) |
-| Referência assíncrona (computador com 300 ms por tiro) | 18/18 passaram |
-| 3 repetições, síncrona e assíncrona | 18/18 em todas: nenhum teste intermitente |
+| Referência síncrona | 19/19 testes passaram (os 16 TCs; o TC-NV-20 tem 4 casos) |
+| Referência assíncrona (computador com 300 ms por tiro) | 19/19 passaram |
+| 3 repetições, síncrona e assíncrona | 19/19 em todas: nenhum teste intermitente |
 | Repositório real (`js/main.js` vazio), `npm run verificar` | Todos **falham pelo motivo certo**: `TestingLibraryElementError` (casa não encontrada) |
 
-### Mutantes: 14 de 14 mortos
+### Mutantes: 15 de 15 mortos
 
 | # | Defeito injetado | Mortos por |
 |---|---|---|
-| 1 | Quem acerta **não** joga de novo | TC-NV-15, 21 |
-| 2 | Água **não** passa a vez | TC-NV-16, 17, 18, 22, 25, 26, 27 |
+| 1 | Quem acerta **não** joga de novo | TC-NV-15, 21, 28 |
+| 2 | Água **não** passa a vez | TC-NV-16, 17, 18, 22, 25, 26, 27, 28 |
 | 3 | Casa repetida conta como tiro | TC-NV-18 |
-| 4 | O computador repete casa (sorteio com reposição) | TC-NV-25 (morto nas 7 execuções) |
-| 5 | O computador acerta e **não** atira de novo | TC-NV-17, 22, 26, 27 |
-| 6 | Navio afunda com uma casa a menos | TC-NV-19, 20, 21, 22, 27 |
-| 7 | Mensagem de afundar com o nome errado | TC-NV-19, 20 |
-| 8 | `placar-cpu` não diminui | TC-NV-19, 20, 21 |
-| 9 | `placar-meus` não diminui | TC-NV-22, 26 |
+| 4 | O computador repete casa (sorteio com reposição) | TC-NV-25 (morto nas 8 execuções) |
+| 5 | O computador acerta e **não** atira de novo | TC-NV-17, 22, 26, 27, 28 |
+| 6 | Navio afunda com uma casa a menos | TC-NV-19, 20, 21, 22, 27, 28 |
+| 7 | Mensagem de afundar com o nome errado | TC-NV-19, 20, 28 |
+| 8 | `placar-cpu` não diminui | TC-NV-19, 20, 21, 28 |
+| 9 | `placar-meus` não diminui | TC-NV-22, 26, 28 |
 | 10 | `acertos` não aumenta | TC-NV-21, 23, 24 |
 | 11 | A vitória não bloqueia novos tiros | TC-NV-21 |
 | 12 | A derrota não bloqueia novos tiros | TC-NV-27 |
-| 13 | A derrota não revela a frota do computador | TC-NV-22, 27 |
-| 14 | Nova partida não zera `tiros` | TC-NV-24 |
+| 13 | A derrota não revela a frota do computador | TC-NV-22, 27, 28 |
+| 14 | A derrota revela também por cima das casas já afundadas | TC-NV-28 |
+| 15 | Nova partida não zera `tiros` | TC-NV-24 |
 
-Os mutantes 9 e 12 só morrem com os TCs adicionais 26 e 27. Antes deles, nenhum teste do plano pegava esses defeitos.
+Os mutantes 12 e 14 só morrem com os TCs adicionais (27 e 28): sem eles, nenhum teste do plano pegava esses defeitos. O mutante 9 já morria pelo TC-NV-22; o TC-NV-26 o pega também sem precisar de uma derrota.
 
 ## Decisões tomadas a partir da validação
 
