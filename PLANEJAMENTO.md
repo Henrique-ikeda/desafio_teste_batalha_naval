@@ -4,8 +4,8 @@ Batalha naval em tabuleiro **10 × 10**, jogador contra o computador, com 1 port
 
 | Integrante | GitHub | Papel neste repositório |
 |---|---|---|
-| Henrique (RA_HENRIQUE) | Henrique-ikeda | Setup do projeto e testes de: tabuleiros, montagem da frota, regra de não encostar e aleatório (tarefas A1–A5) |
-| Felipe (RA_FELIPE) | GITHUB_FELIPE | CI, README e testes de: tiros, quem acerta joga de novo, afundar, estatísticas, vitória, derrota e nova partida (tarefas F1–F5) |
+| Henrique Kendi Ikeda (RA 24039456-2) | Henrique-ikeda | Setup do projeto e testes de: tabuleiros, montagem da frota, regra de não encostar e aleatório (tarefas A1–A5) |
+| Felipe Galeti Gôngora (RA 24036480-2) | FGaleti | CI, README e testes de: tiros, quem acerta joga de novo, afundar, estatísticas, vitória, derrota e nova partida (tarefas F1–F5) |
 
 ---
 
@@ -212,6 +212,8 @@ Cada integrante é **dono de arquivos de teste diferentes** (coluna "Arquivos").
 | **F4** Afundar | `felipe/f4-afundar` | tests/afundar.spec.js | 19, 20 |
 | **F5** Vitória, derrota e nova partida | `felipe/f5-fim` | tests/fim-de-jogo.spec.js | 21, 22, 24 |
 
+**IDs reservados:** `TC-NV-25` a `TC-NV-30` são do Felipe, para casos adicionais que cobrem regras da seção 1 ainda sem TC (ver `docs/MATRIZ-COBERTURA.md`). Propostos: 25 e 26 entram na F3 (`tests/tiros.spec.js`), 27 e 28 na F5 (`tests/fim-de-jogo.spec.js`). Cada um ganha a linha na seção 5 no PR da sua tarefa. Casos novos do Henrique usam `TC-NV-31` em diante.
+
 ## 5. Casos de teste (interface)
 
 "Posicionar X em Y, H/V" = clicar `frota-X`, deixar `btn-orientacao` em Horizontal ou Vertical e clicar `meu-Y`.
@@ -265,7 +267,7 @@ Todos com `CENARIO_BATALHA` (`?jogador=FROTA_FIXA&cpu=FROTA_FIXA&tiros-cpu=AGUA_
 
 Para o professor enxergar a contribuição dos dois, **cada um commita da própria conta**:
 
-1. **Henrique** cria o repositório e adiciona `GITHUB_FELIPE` como colaborador (Settings → Collaborators). **Felipe** aceita o convite.
+1. **Henrique** cria o repositório e adiciona `FGaleti` como colaborador (Settings → Collaborators). **Felipe** aceita o convite.
 2. Cada um configura o Git com o e-mail **cadastrado na própria conta do GitHub** (senão o commit não conta como contribuição):
    ```bash
    git config user.name "Seu Nome"

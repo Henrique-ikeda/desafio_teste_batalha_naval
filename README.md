@@ -1,5 +1,7 @@
 # desafio_teste_batalha_naval
 
+[![Testes](https://github.com/Henrique-ikeda/desafio_teste_batalha_naval/actions/workflows/testes.yml/badge.svg)](https://github.com/Henrique-ikeda/desafio_teste_batalha_naval/actions/workflows/testes.yml)
+
 Desafio de testes: casos de teste para testar a **batalha naval** em tabuleiro **10 × 10**, com 1 porta-aviões (5 casas), 1 encouraçado (4), 1 submarino (3) e 1 destroier ou hidroavião (2), com **casos de teste em JavaScript para testar JavaScript** (Jest + Testing Library).
 
 ## Especificação do desafio
@@ -17,17 +19,17 @@ Regras completas, contrato da tela e divisão das tarefas: [PLANEJAMENTO.md](PLA
 
 | Nome | RA | GitHub | Parte no trabalho |
 |---|---|---|---|
-| Henrique | RA_HENRIQUE | [Henrique-ikeda](https://github.com/Henrique-ikeda) | Tarefas A1–A5: estrutura do projeto e 12 casos de teste (tabuleiros, montagem da frota, regra de não encostar e aleatório) |
-| Felipe | RA_FELIPE | [GITHUB_FELIPE](https://github.com/GITHUB_FELIPE) | Tarefas F1–F5: CI, README e 12 casos de teste (tiros, quem acerta joga de novo, afundar, estatísticas, vitória, derrota e nova partida) |
+| Henrique Kendi Ikeda | 24039456-2 | [Henrique-ikeda](https://github.com/Henrique-ikeda) | Tarefas A1–A5: estrutura do projeto e 12 casos de teste (tabuleiros, montagem da frota, regra de não encostar e aleatório) |
+| Felipe Galeti Gôngora | 24036480-2 | [FGaleti](https://github.com/FGaleti) | Tarefas F1–F5: CI, README, 12 casos de teste do plano (tiros, quem acerta joga de novo, afundar, estatísticas, vitória, derrota e nova partida) e casos adicionais a partir do TC-NV-25 |
 
-As contribuições de cada um aparecem em **Insights → Contributors** e nos commits.
+As contribuições de cada um aparecem em **Insights → Contributors** e nos commits: cada caso de teste tem o seu commit `test: TC-NV-NN ...`, feito da conta de quem o escreveu, e chega à `main` por Pull Request revisado pelo outro integrante.
 
 ## Como rodar
 
-Requisitos: Node.js 18 ou superior.
+Requisitos: Node.js 18 ou superior (a CI testa 18, 20 e 22, no Ubuntu e no Windows).
 
 ```bash
-npm install
+npm install                 # ou npm ci
 npm test                    # roda todos os casos de teste (Jest)
 npm run verificar           # confere o motivo de cada falha e o ID de cada teste
 npm run verificar:completo  # idem + confere que todo caso do plano tem teste
@@ -35,6 +37,8 @@ npx jest tests/<arquivo>.spec.js -t "TC-NV-NN"   # um caso só
 ```
 
 ## Funcionamento dos casos de teste
+
+> **Para o corretor:** `npm test` termina com falhas **de propósito** (o jogo não é implementado; a entrega são os casos de teste). O comando que valida a entrega é `npm run verificar`, que sai com código 0 quando todos os testes falham pelo motivo certo.
 
 **Situação:** somente os casos de teste. O jogo não está implementado, então **todos os testes falham de propósito**, pelo motivo certo (o comportamento ainda não existe). O `npm run verificar` confere isso.
 
@@ -44,7 +48,7 @@ npx jest tests/<arquivo>.spec.js -t "TC-NV-NN"   # um caso só
 - **Sem depender de sorte:** as frotas e os tiros do computador são passados pelos parâmetros de URL `jogador`, `cpu` e `tiros-cpu`. A `FROTA_FIXA` deixa os quatro navios em pé nas colunas A, C, E e G, e os tiros `AGUA_CPU` caem nas colunas I e J (sempre água), então cada caso sabe de antemão onde cada tiro cai.
 - **Rastreabilidade:** cada teste tem no título o ID do caso (`TC-NV-NN`), o mesmo da tabela abaixo e da seção 5 do PLANEJAMENTO.md. A [matriz de cobertura](docs/MATRIZ-COBERTURA.md) liga cada regra do jogo aos seus casos.
 - **Metodologia:** TDD, um caso de teste por vez: escrever, rodar, ver falhar pelo motivo certo e fazer o commit `test:`. Uso de IA documentado em [docs/TDD-COM-IA.md](docs/TDD-COM-IA.md).
-- **Integração contínua:** o GitHub Actions roda `npm ci` e `npm run verificar` em todo push e Pull Request.
+- **Integração contínua:** o GitHub Actions ([`.github/workflows/testes.yml`](.github/workflows/testes.yml)) roda `npm ci` e `npm run verificar` em todo push e Pull Request, com Node 18, 20 e 22 no Ubuntu e no Windows, e guarda como artefato o relatório JSON do Jest e a saída do verificador. Na entrega, o job `verificar-completo` (rodado à mão ou num PR com o rótulo `entrega`) roda `npm run verificar:completo`, que também exige um teste para cada caso da tabela abaixo.
 
 ## Casos de teste (28)
 
