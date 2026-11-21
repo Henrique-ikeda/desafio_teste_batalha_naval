@@ -126,3 +126,28 @@ test('TC-NV-09 devolver um navio', async () => {
   expect(within(lista).getByTestId('frota-P')).toBeVisible();
   expect(within(lista).getByTestId('frota-P')).toHaveTextContent(/\b5\b/);
 });
+
+test('TC-NV-32 reposicionar um navio devolvido', async () => {
+  const user = await abrirJogo();
+  await posicionar(user, 'P', 'A1', 'H');
+  // Devolve o P (nenhum navio da lista selecionado): clicar num navio posicionado.
+  await user.click(meu('C1'));
+  // Põe o P de novo, agora em A3 na horizontal.
+  await posicionar(user, 'P', 'A3', 'H');
+
+  // As casas da posição antiga voltaram a água.
+  for (const casa of ['A1', 'B1', 'C1', 'D1', 'E1']) {
+    expect(meu(casa)).toHaveAttribute('data-estado', 'agua');
+  }
+  // As casas da posição nova são navio.
+  for (const casa of ['A3', 'B3', 'C3', 'D3', 'E3']) {
+    expect(meu(casa)).toHaveAttribute('data-estado', 'navio');
+  }
+  // Fronteira: a sexta casa da linha 3 não pode virar navio.
+  expect(meu('F3')).toHaveAttribute('data-estado', 'agua');
+  // Só o P: exatamente 5 casas de navio.
+  expect(casasNoEstado('meu', 'navio')).toHaveLength(5);
+
+  // O P saiu da lista de novo.
+  expect(screen.queryByTestId('frota-P')).not.toBeInTheDocument();
+});
