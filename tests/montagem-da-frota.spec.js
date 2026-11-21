@@ -207,3 +207,24 @@ test('TC-NV-06 sobreposição', async () => {
   // O E continua na lista de navios a posicionar.
   expect(within(screen.getByTestId('lista-frota')).getByTestId('frota-E')).toBeVisible();
 });
+
+test('TC-NV-07 encostar de lado', async () => {
+  const user = await abrirJogo();
+  // P (5 casas) em A1 para a direita: A1 a E1.
+  await posicionar(user, 'P', 'A1', 'H');
+  // E (4 casas) em A2 para a direita iria de A2 a D2: encosta no P pelo lado (logo abaixo), então é recusado.
+  await posicionar(user, 'E', 'A2', 'H');
+
+  // Só as 5 casas do P são navio: o E não entrou (nem A2, que seria a casa do E).
+  for (const casa of ['A1', 'B1', 'C1', 'D1', 'E1']) {
+    expect(meu(casa)).toHaveAttribute('data-estado', 'navio');
+  }
+  expect(casasNoEstado('meu', 'navio')).toHaveLength(5);
+  for (const casa of ['A2', 'B2', 'C2', 'D2']) {
+    expect(meu(casa)).toHaveAttribute('data-estado', 'agua');
+  }
+  // A mensagem avisa com "inválida" (regex sem âncora: a frase pode ter mais texto).
+  expect(screen.getByTestId('mensagem')).toHaveTextContent(/inválida/i);
+  // O E continua na lista de navios a posicionar.
+  expect(within(screen.getByTestId('lista-frota')).getByTestId('frota-E')).toBeVisible();
+});
