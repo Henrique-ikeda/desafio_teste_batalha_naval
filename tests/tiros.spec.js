@@ -2,7 +2,7 @@
 // Cenário padrão: CENARIO_BATALHA = as duas frotas fixas (FROTA_FIXA: P em A1–A5, E em C1–C4,
 // S em E1–E3, D em G1–G2) e o computador atirando primeiro nas casas de AGUA_CPU (I1, I2, …: sempre água).
 import { waitFor } from '@testing-library/dom';
-import { abrirJogo, alvo, meu, screen, casasNoEstado, CENARIO_BATALHA } from './helpers.js';
+import { abrirJogo, alvo, meu, screen, casasNoEstado, CENARIO_BATALHA, FROTA_FIXA, TODAS_AS_CASAS, TODAS_CASAS_FROTA_FIXA } from './helpers.js';
 
 // A spec não diz se o computador atira na hora ou com atraso: tudo que depende do tiro dele
 // é conferido com waitFor, para o teste valer nas duas implementações.
@@ -13,6 +13,10 @@ const atingidas = (lado) => ['erro', 'acerto', 'afundado'].reduce((n, e) => n + 
 const CPU_ACERTA_DUAS = { ...CENARIO_BATALHA, 'tiros-cpu': 'A1,A2,I1' };
 // O computador afunda o seu destroier (G1–G2) e erra em I1.
 const CPU_AFUNDA_D = { ...CENARIO_BATALHA, 'tiros-cpu': 'G1,G2,I1' };
+// Sem tiros-cpu: o computador sorteia. Só as frotas são fixas.
+const SEM_TIROS_CPU = { jogador: FROTA_FIXA, cpu: FROTA_FIXA };
+// As 86 casas de água do alvo (todas menos as 14 da frota do computador).
+const AGUA_DO_ALVO = TODAS_AS_CASAS.filter((c) => !TODAS_CASAS_FROTA_FIXA.includes(c));
 
 test('TC-NV-13 água', async () => {
   const user = await abrirJogo(CENARIO_BATALHA);
@@ -92,6 +96,26 @@ test('TC-NV-18 casa repetida não conta', async () => {
   expect(meu('I2')).toHaveAttribute('data-estado', 'agua');
   expect(screen.getByTestId('vez')).toHaveTextContent(/^Você$/);
 });
+
+test('TC-NV-25 computador nunca repete', async () => {
+  const user = await abrirJogo(SEM_TIROS_CPU);
+  let antes = 0;
+  let rodadas = 0;
+  for (const casa of AGUA_DO_ALVO) {
+    await user.click(alvo(casa));
+    await waitFor(() => {
+      expect(alvo(casa)).toHaveAttribute('data-estado', 'erro');
+      expect(atingidas('meu')).toBeGreaterThan(antes); // casa nova: se repetisse, o total não subiria
+      // ... ou o jogo acabou (ver abaixo)
+      expect(screen.getByTestId('mensagem').textContent === 'Você perdeu!' || screen.getByTestId('vez').textContent === 'Você').toBe(true);
+    }, ESPERA);
+    rodadas++;
+    antes = atingidas('meu');
+    if (screen.getByTestId('mensagem').textContent === 'Você perdeu!') break;
+  }
+  expect(rodadas).toBeGreaterThan(0);
+  expect(atingidas('meu')).toBeGreaterThanOrEqual(rodadas); // cada rodada acrescentou pelo menos uma casa nova
+}, 60_000);
 
 test('TC-NV-26 computador afunda um navio seu', async () => {
   const user = await abrirJogo(CPU_AFUNDA_D);
