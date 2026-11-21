@@ -267,6 +267,7 @@ Todos com `CENARIO_BATALHA` (`?jogador=FROTA_FIXA&cpu=FROTA_FIXA&tiros-cpu=AGUA_
 
 | ID | Cenário | Parâmetros / passos | Resultado esperado |
 |---|---|---|---|
+| TC-NV-31 | Limites do tabuleiro (parametrizado) | Posicionar P em A7, V (iria até A11); ou P em F1, H (cabe exato até J1); ou P em A6, V (cabe exato até A10) | A7, V: recusado, 0 casas `navio`, `mensagem` contém "inválida", `frota-P` continua na lista. F1, H: `meu-F1` a `meu-J1` = `navio`. A6, V: `meu-A6` a `meu-A10` = `navio`. Nos aceitos: exatamente 5 casas `navio` e `frota-P` sai da página |
 | TC-NV-32 | Reposicionar um navio devolvido | Posicionar P em A1, H; clicar `meu-C1` (devolve); posicionar P em A3, H | `meu-A1` a `meu-E1` = `agua`; `meu-A3` a `meu-E3` = `navio`; exatamente 5 casas `navio`; `frota-P` sai da página |
 | TC-NV-33 | Orientação alterna nos dois sentidos | Clicar `btn-orientacao` duas vezes; clicar `frota-E` e `meu-A1` | `btn-orientacao` = "Vertical" depois do 1º clique e "Horizontal" depois do 2º; `meu-A1` a `meu-D1` = `navio`; `meu-A2` = `agua`; exatamente 4 casas `navio` |
 

@@ -7,7 +7,7 @@ Cada regra da seção 1 do PLANEJAMENTO.md tem pelo menos um caso de teste que o
 | 1 | Dois tabuleiros 10 × 10 | 01 |
 | 2 | Frota 5 + 4 + 3 + 2 | 02, 03, 04, 10, 11 |
 | 3 | Horizontal → direita, vertical → baixo | 03, 04, 33 |
-| 4 | Não sai do tabuleiro | 05 |
+| 4 | Não sai do tabuleiro | 05, 31 |
 | 5 | Não sobrepõe | 06 |
 | 6 | Não encosta, nem de lado nem na diagonal | 07, 08, 11 |
 | 7 | Devolver navio posicionado | 09, 32 |
