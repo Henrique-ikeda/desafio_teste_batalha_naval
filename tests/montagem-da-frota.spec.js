@@ -1,5 +1,5 @@
 // Tarefas A2–A5 (Henrique). Contrato: seções 1, 3 e 5 do PLANEJAMENTO.md.
-import { abrirJogo, alvo, casasDe, casasNoEstado, FROTA_FIXA, meu, posicionar, screen, TODAS_AS_CASAS, TODAS_CASAS_FROTA_FIXA, within } from './helpers.js';
+import { abrirJogo, alvo, casasDe, casasNoEstado, FROTA_FIXA, LETRAS, meu, posicionar, screen, TODAS_AS_CASAS, TODAS_CASAS_FROTA_FIXA, within } from './helpers.js';
 
 // Só a frota do computador é fixa (FROTA_FIXA: P em A1–A5, E em C1–C4, S em E1–E3, D em G1–G2); a sua sai do Aleatório.
 const SO_CPU_FIXA = { cpu: FROTA_FIXA };
@@ -74,4 +74,31 @@ test('TC-NV-03 posicionar na horizontal', async () => {
   for (const letra of ['E', 'S', 'D']) {
     expect(within(lista).getByTestId(`frota-${letra}`)).toBeVisible();
   }
+});
+
+test('TC-NV-04 girar para vertical', async () => {
+  const user = await abrirJogo();
+  // Clique à mão (sem o helper posicionar, que mexe sozinho na orientação).
+  await user.click(screen.getByTestId('btn-orientacao'));
+  expect(screen.getByTestId('btn-orientacao')).toHaveTextContent(/^Vertical$/);
+
+  await user.click(screen.getByTestId('frota-E'));
+  await user.click(meu('J1'));
+
+  // E (4 casas) em J1 para baixo: J1 a J4.
+  for (const casa of ['J1', 'J2', 'J3', 'J4']) {
+    expect(meu(casa)).toHaveAttribute('data-estado', 'navio');
+  }
+  // Fronteira: a quinta casa da coluna não pode virar navio.
+  expect(meu('J5')).toHaveAttribute('data-estado', 'agua');
+  expect(casasNoEstado('meu', 'navio')).toHaveLength(4);
+
+  // Nada na linha 1 fora da coluna J.
+  for (const letra of LETRAS.filter((l) => l !== 'J')) {
+    expect(meu(`${letra}1`)).toHaveAttribute('data-estado', 'agua');
+  }
+
+  // O botão do E sai da lista; a orientação continua vertical.
+  expect(screen.queryByTestId('frota-E')).not.toBeInTheDocument();
+  expect(screen.getByTestId('btn-orientacao')).toHaveTextContent(/^Vertical$/);
 });
