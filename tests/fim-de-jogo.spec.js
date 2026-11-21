@@ -66,3 +66,16 @@ test('TC-NV-24 nova partida', async () => {
   expect(texto('tiros')).toHaveTextContent(/^0$/);
   expect(texto('acertos')).toHaveTextContent(/^0$/);
 });
+
+test('TC-NV-27 derrota bloqueia novos tiros', async () => {
+  const user = await abrirJogo(CPU_VENCE);
+  await user.click(alvo('J10'));
+  await waitFor(() => expect(texto('mensagem')).toHaveTextContent(/^Você perdeu!$/), { timeout: 15000 });
+  expect(texto('tiros')).toHaveTextContent(/^1$/);
+  expect(alvo('A1')).toHaveAttribute('data-estado', 'navio');
+  await user.click(alvo('J9'));
+  expect(alvo('J9')).toHaveAttribute('data-estado', 'oculto');
+  expect(texto('tiros')).toHaveTextContent(/^1$/);
+  expect(texto('mensagem')).toHaveTextContent(/^Você perdeu!$/);
+  expect(atingidas('meu')).toBe(14);
+}, 30_000);
