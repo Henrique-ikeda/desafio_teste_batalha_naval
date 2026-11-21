@@ -370,3 +370,21 @@ test('TC-NV-11 aleatório respeita as regras', async () => {
     expect(screen.getByTestId('btn-comecar')).toBeEnabled();
   }
 });
+
+test('TC-NV-34 aleatório substitui a frota, não soma', async () => {
+  const user = await abrirJogo();
+  // P manual em A1 na horizontal (5 casas): o Aleatório tem que substituir essa frota, não somar a ela.
+  await posicionar(user, 'P', 'A1', 'H');
+  // Pré-condição: só o P (5 casas) está no tabuleiro.
+  expect(casasNoEstado('meu', 'navio')).toHaveLength(5);
+
+  // Dois cliques no Aleatório: cada resultado tem que ser a frota inteira, sem resto do P manual.
+  for (let i = 0; i < 2; i++) {
+    await user.click(screen.getByTestId('btn-aleatorio'));
+    // 14 casas e 4 grupos [2,3,4,5]: se somasse ao P manual, haveria mais casas ou um grupo a mais.
+    conferirFrotaValida();
+    // Todos os navios saíram da lista de posicionar.
+    for (const l of ['P', 'E', 'S', 'D']) expect(screen.queryByTestId(`frota-${l}`)).not.toBeInTheDocument();
+    expect(screen.getByTestId('btn-comecar')).toBeEnabled();
+  }
+});
