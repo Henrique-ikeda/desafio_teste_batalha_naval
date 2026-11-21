@@ -79,3 +79,25 @@ test('TC-NV-27 derrota bloqueia novos tiros', async () => {
   expect(texto('mensagem')).toHaveTextContent(/^Você perdeu!$/);
   expect(atingidas('meu')).toBe(14);
 }, 30_000);
+
+test('TC-NV-28 derrota revela só os navios que sobraram', async () => {
+  const user = await abrirJogo(CPU_VENCE);
+  await user.click(alvo('G1'));
+  expect(alvo('G1')).toHaveAttribute('data-estado', 'acerto');
+  await user.click(alvo('G2'));
+  expect(alvo('G1')).toHaveAttribute('data-estado', 'afundado');
+  expect(alvo('G2')).toHaveAttribute('data-estado', 'afundado');
+  expect(texto('mensagem')).toHaveTextContent(/^Afundou o Destroier!$/);
+  await user.click(alvo('J10'));
+  await waitFor(() => expect(texto('mensagem')).toHaveTextContent(/^Você perdeu!$/), { timeout: 15000 });
+  expect(alvo('G1')).toHaveAttribute('data-estado', 'afundado');
+  expect(alvo('G2')).toHaveAttribute('data-estado', 'afundado');
+  const restantes = TODAS_CASAS_FROTA_FIXA.filter((c) => !['G1', 'G2'].includes(c));
+  expect(restantes).toHaveLength(12);
+  for (const casa of restantes) {
+    expect(alvo(casa)).toHaveAttribute('data-estado', 'navio');
+  }
+  expect(casasNoEstado('alvo', 'navio')).toHaveLength(12);
+  expect(texto('placar-cpu')).toHaveTextContent(/^3$/);
+  expect(texto('placar-meus')).toHaveTextContent(/^0$/);
+}, 30_000);
