@@ -212,7 +212,7 @@ Cada integrante é **dono de arquivos de teste diferentes** (coluna "Arquivos").
 | **F4** Afundar | `felipe/f4-afundar` | tests/afundar.spec.js | 19, 20 |
 | **F5** Vitória, derrota e nova partida | `felipe/f5-fim` | tests/fim-de-jogo.spec.js | 21, 22, 24 |
 
-**IDs reservados:** `TC-NV-25` a `TC-NV-30` são do Felipe, para casos adicionais que cobrem regras da seção 1 ainda sem TC (ver `docs/MATRIZ-COBERTURA.md`). Propostos: 25 e 26 entram na F3 (`tests/tiros.spec.js`), 27 na F5 (`tests/fim-de-jogo.spec.js`). Cada um ganha a linha na seção 5 no PR da sua tarefa. Casos novos do Henrique usam `TC-NV-31` em diante.
+**IDs reservados:** `TC-NV-25` a `TC-NV-30` são do Felipe, para casos adicionais que cobrem regras da seção 1 ainda sem TC (ver `docs/MATRIZ-COBERTURA.md`). Propostos: 25 e 26 entram na F3 (`tests/tiros.spec.js`), 27 e 28 na F5 (`tests/fim-de-jogo.spec.js`). Cada um ganha a linha na seção 5 no PR da sua tarefa. Casos novos do Henrique usam `TC-NV-31` em diante.
 
 ## 5. Casos de teste (interface)
 
