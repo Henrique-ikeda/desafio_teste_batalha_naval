@@ -155,11 +155,12 @@ test('TC-NV-32 reposicionar um navio devolvido', async () => {
 test('TC-NV-33 orientação alterna nos dois sentidos', async () => {
   const user = await abrirJogo();
   // Clique à mão (sem o helper posicionar, que corrige a orientação sozinho).
-  const botao = screen.getByTestId('btn-orientacao');
-  await user.click(botao);
-  expect(botao).toHaveTextContent(/^Vertical$/);
-  await user.click(botao);
-  expect(botao).toHaveTextContent(/^Horizontal$/);
+  // Busca o botão de novo a cada passo: o jogo pode recriá-lo ao trocar o texto.
+  const botao = () => screen.getByTestId('btn-orientacao');
+  await user.click(botao());
+  expect(botao()).toHaveTextContent(/^Vertical$/);
+  await user.click(botao());
+  expect(botao()).toHaveTextContent(/^Horizontal$/);
 
   // Com a orientação de volta a horizontal, E (4 casas) em A1 vai para a direita: A1 a D1.
   await user.click(screen.getByTestId('frota-E'));
