@@ -9,3 +9,10 @@ test('TC-NV-13 água', async () => {
   expect(alvo('J10')).toHaveAttribute('data-estado', 'erro');
   expect(screen.getByTestId('mensagem')).toHaveTextContent(/^Água!$/);
 });
+
+test('TC-NV-14 acerto', async () => {
+  const user = await abrirJogo(CENARIO_BATALHA);
+  await user.click(alvo('A1'));
+  expect(alvo('A1')).toHaveAttribute('data-estado', 'acerto');
+  expect(screen.getByTestId('mensagem')).toHaveTextContent(/^Acertou!$/);
+});
