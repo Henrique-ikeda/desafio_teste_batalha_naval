@@ -51,14 +51,17 @@ Num repositório "somente testes", falhar pelo motivo certo não prova que o tes
 - **TC-NV-11 e TC-NV-34** não conferem posições, e sim a **propriedade** da frota. As casas `navio` são agrupadas por vizinhança de 8 direções (inclusive diagonal). Precisam sair exatamente 4 grupos, de tamanhos {2, 3, 4, 5}, cada um em linha reta e contíguo. Um único conjunto de asserções prova que não há sobreposição, que nenhum navio encosta (nem na diagonal) e que nenhum dobra. O helper fica local no spec (`gruposComCasas`, `emLinhaReta`, `conferirFrotaValida`).
 - **TC-NV-12** usa `cpu=FROTA_FIXA`: a sua frota é aleatória, mas o teste só confere o alvo, que é fixo.
 
-## Ambiguidades da spec (decisão pendente da dupla)
+## Ambiguidades da spec (resolvidas na tarefa A6)
 
-Nenhuma delas virou regra nem teste: ficam registradas para a dupla decidir.
+As ambiguidades encontradas na validação viraram regras escritas na seção 1 do PLANEJAMENTO.md e casos de teste novos (branch `henrique/a6-regras-pendentes`):
 
-1. **Seleção depois de uma recusa:** a seção 1 não diz se o navio continua selecionado depois de uma posição inválida. O TC-NV-08 clica `frota-D` de novo (é o que a seção 5 define como "posicionar"), e assim vale nas duas leituras.
-2. **Clicar no próprio tabuleiro depois de Começar:** clicar num navio posicionado durante a batalha não deveria devolvê-lo, mas isso não está escrito. Proposta de TC: `CENARIO_BATALHA`, clicar `meu-A1` → `meu-A1` continua `navio`, nenhum `frota-*` aparece.
-3. **`btn-aleatorio` e `btn-orientacao` depois de Começar:** desabilitados ou ignorados? Não está escrito.
-4. **A mensagem "inválida" some** depois de uma jogada válida? Não está escrito.
-5. **Clicar num navio posicionado com outro navio selecionado:** pela seção 1, ele só é devolvido "sem nenhum navio da lista selecionado". Mas o resultado (recusa com "inválida"? nada?) não está escrito.
-6. **TC-NV-10:** a coluna de passos diz só "→ conferir". O teste confere o resultado esperado da linha e, a mais, 12 e 14 casas `navio`. O texto do TC não foi alterado.
-7. **Tiro antes de Começar** (também levantada pelo Felipe): combinar uma proposta única.
+| Ambiguidade | Regra adotada (seção 1) | TC |
+|---|---|---|
+| O navio continua selecionado depois de uma posição recusada? | Sim: basta clicar em outra casa | TC-NV-37 |
+| A mensagem "inválida" some depois de uma jogada válida? | Sim: é apagada quando um navio é posicionado | TC-NV-38 |
+| Clicar num navio posicionado com outro navio selecionado | É uma tentativa de posicionar o selecionado ali: recusada ("inválida"), nada é devolvido | TC-NV-39 |
+| Clicar no próprio tabuleiro, Aleatório e Orientação depois de Começar | A montagem acabou: o clique no tabuleiro não faz nada; os dois botões ficam desabilitados | TC-NV-40 |
+| Tiro antes de Começar (proposta do Felipe na validação dele) | Durante a montagem, clicar no alvo não faz nada | TC-NV-41 |
+| Passos do TC-NV-10 diziam só "→ conferir" | Passos explicitados (o que conferir com 3 e com 4 navios); o resultado esperado não mudou | — |
+
+O TC-NV-08 continua clicando `frota-D` de novo antes de G2 (é o que a seção 5 chama de "posicionar"); a regra da seleção é coberta à parte pelo TC-NV-37.
