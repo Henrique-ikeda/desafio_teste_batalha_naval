@@ -174,3 +174,17 @@ test('TC-NV-33 orientação alterna nos dois sentidos', async () => {
   expect(meu('E1')).toHaveAttribute('data-estado', 'agua');
   expect(casasNoEstado('meu', 'navio')).toHaveLength(4);
 });
+
+test('TC-NV-05 sair do tabuleiro', async () => {
+  const user = await abrirJogo();
+  // P (5 casas) em G1 para a direita iria de G1 a K1: sai do tabuleiro (K não existe), então é recusado.
+  await posicionar(user, 'P', 'G1', 'H');
+
+  // Nenhuma casa muda: o tabuleiro continua todo água.
+  expect(casasNoEstado('meu', 'agua')).toHaveLength(100);
+  expect(casasNoEstado('meu', 'navio')).toHaveLength(0);
+  // A mensagem avisa com "inválida" (regex sem âncora: a frase pode ter mais texto).
+  expect(screen.getByTestId('mensagem')).toHaveTextContent(/inválida/i);
+  // O P continua na lista de navios a posicionar.
+  expect(within(screen.getByTestId('lista-frota')).getByTestId('frota-P')).toBeVisible();
+});
