@@ -102,3 +102,27 @@ test('TC-NV-04 girar para vertical', async () => {
   expect(screen.queryByTestId('frota-E')).not.toBeInTheDocument();
   expect(screen.getByTestId('btn-orientacao')).toHaveTextContent(/^Vertical$/);
 });
+
+test('TC-NV-09 devolver um navio', async () => {
+  const user = await abrirJogo();
+  await posicionar(user, 'P', 'A1', 'H');
+
+  // Pré-condição: o P está posicionado, então há o que devolver.
+  expect(casasNoEstado('meu', 'navio')).toHaveLength(5);
+  expect(screen.queryByTestId('frota-P')).not.toBeInTheDocument();
+
+  // Nenhum navio da lista selecionado: clicar num navio já posicionado devolve o P.
+  await user.click(meu('C1'));
+
+  // As 5 casas do P voltam a água.
+  for (const casa of ['A1', 'B1', 'C1', 'D1', 'E1']) {
+    expect(meu(casa)).toHaveAttribute('data-estado', 'agua');
+  }
+  expect(casasNoEstado('meu', 'navio')).toHaveLength(0);
+  expect(casasNoEstado('meu', 'agua')).toHaveLength(100);
+
+  // O P volta para a lista de navios a posicionar.
+  const lista = screen.getByTestId('lista-frota');
+  expect(within(lista).getByTestId('frota-P')).toBeVisible();
+  expect(within(lista).getByTestId('frota-P')).toHaveTextContent(/\b5\b/);
+});
