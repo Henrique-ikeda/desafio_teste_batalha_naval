@@ -228,3 +228,31 @@ test('TC-NV-07 encostar de lado', async () => {
   // O E continua na lista de navios a posicionar.
   expect(within(screen.getByTestId('lista-frota')).getByTestId('frota-E')).toBeVisible();
 });
+
+test('TC-NV-08 encostar na diagonal', async () => {
+  const user = await abrirJogo();
+  // P (5 casas) em A1 para a direita: A1 a E1.
+  await posicionar(user, 'P', 'A1', 'H');
+  // D (2 casas) em F2 para a direita: F2 e G2. F2 encosta em E1 só na diagonal, então é recusado.
+  await posicionar(user, 'D', 'F2', 'H');
+
+  // Recusado: F2 e G2 continuam água e só o P está no tabuleiro.
+  expect(meu('F2')).toHaveAttribute('data-estado', 'agua');
+  expect(meu('G2')).toHaveAttribute('data-estado', 'agua');
+  expect(casasNoEstado('meu', 'navio')).toHaveLength(5);
+  // A mensagem avisa com "inválida" (regex sem âncora: a frase pode ter mais texto).
+  expect(screen.getByTestId('mensagem')).toHaveTextContent(/inválida/i);
+  // O D continua na lista de navios a posicionar.
+  expect(within(screen.getByTestId('lista-frota')).getByTestId('frota-D')).toBeVisible();
+
+  // D em G2 (seção 5: clicar frota-D de novo e a casa): G2 e H2 não encostam em nada, então são aceitos.
+  await posicionar(user, 'D', 'G2', 'H');
+  expect(meu('G2')).toHaveAttribute('data-estado', 'navio');
+  expect(meu('H2')).toHaveAttribute('data-estado', 'navio');
+  // Fronteira: I2 (logo depois do D) continua água.
+  expect(meu('I2')).toHaveAttribute('data-estado', 'agua');
+  // 5 casas do P + 2 do D.
+  expect(casasNoEstado('meu', 'navio')).toHaveLength(7);
+  // O D saiu da lista.
+  expect(screen.queryByTestId('frota-D')).not.toBeInTheDocument();
+});
