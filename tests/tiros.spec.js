@@ -99,6 +99,8 @@ test('TC-NV-18 casa repetida não conta', async () => {
 
 test('TC-NV-25 computador nunca repete', async () => {
   const user = await abrirJogo(SEM_TIROS_CPU);
+  const perdeu = () => /^Você perdeu!$/.test(screen.getByTestId('mensagem').textContent.trim());
+  const minhaVez = () => /^Você$/.test(screen.getByTestId('vez').textContent.trim());
   let antes = 0;
   let rodadas = 0;
   for (const casa of AGUA_DO_ALVO) {
@@ -106,16 +108,15 @@ test('TC-NV-25 computador nunca repete', async () => {
     await waitFor(() => {
       expect(alvo(casa)).toHaveAttribute('data-estado', 'erro');
       expect(atingidas('meu')).toBeGreaterThan(antes); // casa nova: se repetisse, o total não subiria
-      // ... ou o jogo acabou (ver abaixo)
-      expect(screen.getByTestId('mensagem').textContent === 'Você perdeu!' || screen.getByTestId('vez').textContent === 'Você').toBe(true);
+      expect(perdeu() || minhaVez()).toBe(true); // a vez voltou para você, ou o computador venceu
     }, ESPERA);
     rodadas++;
     antes = atingidas('meu');
-    if (screen.getByTestId('mensagem').textContent === 'Você perdeu!') break;
+    if (perdeu()) break; // o computador afundou a sua frota: não há mais tiros
   }
   expect(rodadas).toBeGreaterThan(0);
   expect(atingidas('meu')).toBeGreaterThanOrEqual(rodadas); // cada rodada acrescentou pelo menos uma casa nova
-}, 60_000);
+}, 120_000); // até 86 rodadas, e o computador pode atirar com atraso
 
 test('TC-NV-26 computador afunda um navio seu', async () => {
   const user = await abrirJogo(CPU_AFUNDA_D);
