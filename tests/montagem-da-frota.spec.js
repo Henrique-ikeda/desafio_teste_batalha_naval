@@ -282,3 +282,23 @@ test.each([
     expect(screen.queryByTestId('frota-P')).not.toBeInTheDocument();
   }
 });
+
+test('TC-NV-10 começar só com a frota completa', async () => {
+  const user = await abrirJogo();
+  // P (5), E (4) e S (3) posicionados, sem encostar: A1–E1, A3–D3, A5–C5. Falta só o D (2).
+  await posicionar(user, 'P', 'A1', 'H');
+  await posicionar(user, 'E', 'A3', 'H');
+  await posicionar(user, 'S', 'A5', 'H');
+
+  // Com 3 navios (5 + 4 + 3 = 12 casas): o botão Começar segue desabilitado e o D ainda está na lista.
+  expect(casasNoEstado('meu', 'navio')).toHaveLength(12);
+  expect(screen.getByTestId('btn-comecar')).toBeDisabled();
+  expect(within(screen.getByTestId('lista-frota')).getByTestId('frota-D')).toBeVisible();
+
+  // D (2) em A7, H: A7 e B7 (sem encostar nos outros navios).
+  await posicionar(user, 'D', 'A7', 'H');
+
+  // Com os 4 navios (14 casas): Começar habilitado.
+  expect(casasNoEstado('meu', 'navio')).toHaveLength(14);
+  expect(screen.getByTestId('btn-comecar')).toBeEnabled();
+});
