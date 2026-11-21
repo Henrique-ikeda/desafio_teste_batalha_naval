@@ -3,6 +3,8 @@ import { abrirJogo, alvo, casasDe, casasNoEstado, FROTA_FIXA, LETRAS, meu, posic
 
 // Só a frota do computador é fixa (FROTA_FIXA: P em A1–A5, E em C1–C4, S em E1–E3, D em G1–G2); a sua sai do Aleatório.
 const SO_CPU_FIXA = { cpu: FROTA_FIXA };
+// As duas frotas fixas, sem tiros-cpu: a sua frota vem pronta do parâmetro jogador.
+const FROTAS_FIXAS = { jogador: FROTA_FIXA, cpu: FROTA_FIXA };
 
 test('TC-NV-01 dois tabuleiros 10 × 10', async () => {
   await abrirJogo();
@@ -387,4 +389,26 @@ test('TC-NV-34 aleatório substitui a frota, não soma', async () => {
     for (const l of ['P', 'E', 'S', 'D']) expect(screen.queryByTestId(`frota-${l}`)).not.toBeInTheDocument();
     expect(screen.getByTestId('btn-comecar')).toBeEnabled();
   }
+});
+
+test('TC-NV-35 parâmetro jogador monta a sua frota e pula para a batalha', async () => {
+  const user = await abrirJogo(FROTAS_FIXAS);
+
+  // Exatamente as 14 casas da FROTA_FIXA viram navio no seu tabuleiro.
+  for (const casa of TODAS_CASAS_FROTA_FIXA) {
+    expect(meu(casa)).toHaveAttribute('data-estado', 'navio');
+  }
+  expect(casasNoEstado('meu', 'navio')).toHaveLength(14);
+
+  // A lista de navios a posicionar fica vazia.
+  for (const l of ['P', 'E', 'S', 'D']) {
+    expect(screen.queryByTestId(`frota-${l}`)).not.toBeInTheDocument();
+  }
+
+  // Já está na batalha: a vez é sua.
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Você$/);
+
+  // O tiro em J10 é aceito (vira erro, pois a CPU não tem navio ali).
+  await user.click(alvo('J10'));
+  expect(alvo('J10')).toHaveAttribute('data-estado', 'erro');
 });
