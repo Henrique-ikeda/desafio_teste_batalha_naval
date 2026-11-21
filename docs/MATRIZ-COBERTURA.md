@@ -1,6 +1,6 @@
 # Matriz regra → casos de teste — Batalha naval
 
-Cada regra da seção 1 do PLANEJAMENTO.md tem pelo menos um caso de teste que obriga o jogo a cumpri-la.
+Cada regra da seção 1 do PLANEJAMENTO.md (e o parâmetro `jogador` do contrato da seção 3, linha 17) tem pelo menos um caso de teste que obriga o jogo a cumpri-la.
 
 | # | Regra (seção 1) | TCs |
 |---|---|---|

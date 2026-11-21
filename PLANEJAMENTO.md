@@ -263,6 +263,8 @@ Todos com `CENARIO_BATALHA` (`?jogador=FROTA_FIXA&cpu=FROTA_FIXA&tiros-cpu=AGUA_
 | TC-NV-27 | Derrota bloqueia novos tiros | `tiros-cpu` = as 14 casas da `FROTA_FIXA` (cenário do TC-NV-22). Atirar em `alvo-J10`; depois de "Você perdeu!", clicar `alvo-J9` | `alvo-J9` não vira `erro` (continua `oculto`: não tem navio); `tiros` continua 1; `mensagem` continua "Você perdeu!" |
 | TC-NV-28 | Derrota revela só os navios que sobraram | `tiros-cpu` = as 14 casas da `FROTA_FIXA`. Atirar em `alvo-G1` e `alvo-G2` (afunda o Destroier) e depois em `alvo-J10` | `mensagem` = "Você perdeu!"; `alvo-G1` e `alvo-G2` continuam `afundado`; as outras 12 casas da frota do computador aparecem como `navio`; `placar-cpu` = 3 |
 
+### Henrique — casos adicionais
+
 **Casos adicionais propostos pelo Henrique** (IDs a partir de `TC-NV-31`, seção 4; reforçam regras da montagem da frota que tinham cobertura fina):
 
 | ID | Cenário | Parâmetros / passos | Resultado esperado |
