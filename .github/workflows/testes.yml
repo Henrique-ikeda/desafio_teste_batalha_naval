@@ -20,6 +20,8 @@ concurrency:
 jobs:
   verificar:
     name: verificar (Node ${{ matrix.node }}, ${{ matrix.os }})
+    # O rótulo "entrega" só deve disparar o verificar-completo, não a matriz de novo.
+    if: github.event.action != 'labeled'
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
