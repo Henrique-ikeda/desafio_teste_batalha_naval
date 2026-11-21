@@ -46,7 +46,7 @@ npx jest tests/<arquivo>.spec.js -t "TC-NV-NN"   # um caso só
 - **Metodologia:** TDD, um caso de teste por vez: escrever, rodar, ver falhar pelo motivo certo e fazer o commit `test:`. Uso de IA documentado em [docs/TDD-COM-IA.md](docs/TDD-COM-IA.md).
 - **Integração contínua:** o GitHub Actions roda `npm ci` e `npm run verificar` em todo push e Pull Request.
 
-## Casos de teste (24)
+## Casos de teste (26)
 
 | ID | Cenário | Arquivo | Resultado esperado | Autor |
 |---|---|---|---|---|
@@ -74,6 +74,8 @@ npx jest tests/<arquivo>.spec.js -t "TC-NV-NN"   # um caso só
 | TC-NV-22 | Derrota | `tests/fim-de-jogo.spec.js` | O computador acerta 14 seguidas: `mensagem` = "Você perdeu!"; `placar-meus` = 0; as 14 casas da frota do computador aparecem como `navio` no alvo | Felipe |
 | TC-NV-23 | Estatísticas | `tests/tiros.spec.js` | `tiros` = 2; `acertos` = 1 | Felipe |
 | TC-NV-24 | Nova partida | `tests/fim-de-jogo.spec.js` | Volta à montagem: `frota-P`, `E`, `S`, `D` na lista; 100 casas `meu-*` com `agua`; 100 `alvo-*` com `oculto`; `btn-comecar` desabilitado; `tiros` = 0 | Felipe |
+| TC-NV-25 | Computador nunca repete | `tests/tiros.spec.js` | Depois de cada tiro de água do jogador, o total de casas atingidas em `meu-*` (`erro` + `acerto` + `afundado`) aumenta pelo menos 1 e a `vez` volta para "Você" (ou o jogo acaba com "Você perdeu!"). Se o computador repetisse uma casa, o total não aumentaria | Felipe |
+| TC-NV-26 | Computador afunda um navio seu | `tests/tiros.spec.js` | `meu-G1` e `meu-G2` = `afundado`; `meu-I1` = `erro`; `placar-meus` = 3; `vez` = "Você" | Felipe |
 
 ## Estrutura
 

@@ -15,8 +15,8 @@ Cada regra da seção 1 do PLANEJAMENTO.md tem pelo menos um caso de teste que o
 | 9 | Frota do computador escondida | 12 |
 | 10 | Água / Acertou! | 13, 14 |
 | 11 | Quem acerta atira de novo; quem erra passa a vez (os dois lados) | 15, 16, 17, 21, 22 |
-| 12 | Sem tiro repetido | 18 |
-| 13 | Afundar e "Afundou o *Nome*!"; placar | 19, 20 |
+| 12 | Sem tiro repetido (jogador e computador) | 18, 25 |
+| 13 | Afundar e "Afundou o *Nome*!"; placar (os dois lados) | 19, 20, 26 |
 | 14 | Estatísticas de tiros e acertos | 18, 23 |
 | 15 | Vitória, derrota (revela a frota do computador), nada depois do fim | 21, 22 |
 | 16 | Nova partida volta à montagem | 24 |
