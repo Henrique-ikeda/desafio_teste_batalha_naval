@@ -492,3 +492,26 @@ test('TC-NV-39 clicar num navio posicionado com outro selecionado', async () => 
   // O P não foi devolvido: continua fora da lista.
   expect(screen.queryByTestId('frota-P')).not.toBeInTheDocument();
 });
+
+test('TC-NV-40 montagem acaba ao Começar', async () => {
+  const user = await abrirJogo(SO_CPU_FIXA);
+  await user.click(screen.getByTestId('btn-aleatorio'));
+  await user.click(screen.getByTestId('btn-comecar'));
+
+  // Prova que a batalha começou.
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Você$/);
+
+  // A frota é aleatória: pega a primeira casa com navio do seu tabuleiro.
+  const casaComNavio = casasNoEstado('meu', 'navio')[0];
+  await user.click(casaComNavio);
+
+  // Clicar no seu tabuleiro depois de Começar não devolve navio: continuam 14 casas e nenhum frota-* na página.
+  expect(casasNoEstado('meu', 'navio')).toHaveLength(14);
+  for (const l of ['P', 'E', 'S', 'D']) {
+    expect(screen.queryByTestId(`frota-${l}`)).not.toBeInTheDocument();
+  }
+
+  // A montagem acabou: aleatório e orientação ficam desabilitados.
+  expect(screen.getByTestId('btn-aleatorio')).toBeDisabled();
+  expect(screen.getByTestId('btn-orientacao')).toBeDisabled();
+});
