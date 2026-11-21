@@ -18,7 +18,7 @@ Cada regra da seção 1 do PLANEJAMENTO.md tem pelo menos um caso de teste que o
 | 12 | Sem tiro repetido (jogador e computador) | 18, 25 |
 | 13 | Afundar e "Afundou o *Nome*!"; placar (os dois lados) | 19, 20, 26 |
 | 14 | Estatísticas de tiros e acertos | 18, 23 |
-| 15 | Vitória, derrota (revela a frota do computador), nada depois do fim (nos dois casos) | 21, 22, 27 |
+| 15 | Vitória, derrota (revela a frota do computador), nada depois do fim (nos dois casos) | 21, 22, 27, 28 |
 | 16 | Nova partida volta à montagem | 24 |
 
 **Para que serve:** se alguém fosse implementar o jogo só a partir destes testes, toda regra do jogo teria um teste exigindo que ela exista.
