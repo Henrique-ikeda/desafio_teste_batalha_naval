@@ -256,3 +256,29 @@ test('TC-NV-08 encostar na diagonal', async () => {
   // O D saiu da lista.
   expect(screen.queryByTestId('frota-D')).not.toBeInTheDocument();
 });
+
+// Limites do tabuleiro (TC-NV-31, proposto pelo Henrique). Tabuleiro: colunas A–J, linhas 1–10.
+// casas: null = recusado (sai do tabuleiro); senão = casas que devem virar navio.
+test.each([
+  { casa: 'A7', orientacao: 'V', casas: null },                                   // iria de A7 a A11: recusado
+  { casa: 'F1', orientacao: 'H', casas: ['F1', 'G1', 'H1', 'I1', 'J1'] },         // cabe exato até a coluna J
+  { casa: 'A6', orientacao: 'V', casas: ['A6', 'A7', 'A8', 'A9', 'A10'] },        // cabe exato até a linha 10
+])('TC-NV-31 limites do tabuleiro: P em $casa, $orientacao', async ({ casa, orientacao, casas }) => {
+  const user = await abrirJogo();
+  await posicionar(user, 'P', casa, orientacao);
+
+  if (casas === null) {
+    // Recusado: nenhuma casa muda, a mensagem avisa e o P continua na lista.
+    expect(casasNoEstado('meu', 'navio')).toHaveLength(0);
+    expect(casasNoEstado('meu', 'agua')).toHaveLength(100);
+    expect(screen.getByTestId('mensagem')).toHaveTextContent(/inválida/i);
+    expect(within(screen.getByTestId('lista-frota')).getByTestId('frota-P')).toBeVisible();
+  } else {
+    // Aceito: as 5 casas viram navio, nada a mais, e o P sai da lista.
+    for (const c of casas) {
+      expect(meu(c)).toHaveAttribute('data-estado', 'navio');
+    }
+    expect(casasNoEstado('meu', 'navio')).toHaveLength(5);
+    expect(screen.queryByTestId('frota-P')).not.toBeInTheDocument();
+  }
+});
