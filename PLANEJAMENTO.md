@@ -252,6 +252,15 @@ Todos com `CENARIO_BATALHA` (`?jogador=FROTA_FIXA&cpu=FROTA_FIXA&tiros-cpu=AGUA_
 | TC-NV-23 | Estatísticas | Atirar em `alvo-A1` (acerto) e depois em `alvo-J10` (água) | `tiros` = 2; `acertos` = 1 |
 | TC-NV-24 | Nova partida | Atirar em `alvo-A1`; clicar `btn-nova-partida` | Volta à montagem: `frota-P`, `E`, `S`, `D` na lista; 100 casas `meu-*` com `agua`; 100 `alvo-*` com `oculto`; `btn-comecar` desabilitado; `tiros` = 0 |
 
+**Casos adicionais propostos pelo Felipe** (IDs reservados na seção 4; cobrem regras da seção 1 que ainda não tinham TC):
+
+| ID | Cenário | Parâmetros / passos | Resultado esperado |
+|---|---|---|---|
+| TC-NV-25 | Computador nunca repete | `?jogador=FROTA_FIXA&cpu=FROTA_FIXA`, **sem** `tiros-cpu` (o computador sorteia). Atirar, uma por vez, nas 86 casas de água do alvo (todas menos as 14 da frota), parando se o jogo acabar | Depois de cada tiro de água do jogador, o total de casas atingidas em `meu-*` (`erro` + `acerto` + `afundado`) aumenta pelo menos 1 e a `vez` volta para "Você" (ou o jogo acaba com "Você perdeu!"). Se o computador repetisse uma casa, o total não aumentaria |
+| TC-NV-26 | Computador afunda um navio seu | `tiros-cpu=G1,G2,I1`. Atirar em `alvo-J10` | `meu-G1` e `meu-G2` = `afundado`; `meu-I1` = `erro`; `placar-meus` = 3; `vez` = "Você" |
+| TC-NV-27 | Derrota bloqueia novos tiros | `tiros-cpu` = as 14 casas da `FROTA_FIXA` (cenário do TC-NV-22). Atirar em `alvo-J10`; depois de "Você perdeu!", clicar `alvo-J9` | `alvo-J9` não vira `erro` (continua `oculto`: não tem navio); `tiros` continua 1; `mensagem` continua "Você perdeu!" |
+| TC-NV-28 | Derrota revela só os navios que sobraram | `tiros-cpu` = as 14 casas da `FROTA_FIXA`. Atirar em `alvo-G1` e `alvo-G2` (afunda o Destroier) e depois em `alvo-J10` | `mensagem` = "Você perdeu!"; `alvo-G1` e `alvo-G2` continuam `afundado`; as outras 12 casas da frota do computador aparecem como `navio`; `placar-cpu` = 3 |
+
 ## 6. Fluxo de trabalho no Git
 
 Para o professor enxergar a contribuição dos dois, **cada um commita da própria conta**:
