@@ -1,11 +1,14 @@
 // Tarefa F5 (Felipe). Contrato: seções 1, 3 e 5 do PLANEJAMENTO.md.
 // Cenário padrão: CENARIO_BATALHA = as duas frotas fixas (FROTA_FIXA: P em A1–A5, E em C1–C4,
 // S em E1–E3, D em G1–G2) e o computador atirando primeiro nas casas de AGUA_CPU (I1, I2, …: sempre água).
-import { abrirJogo, alvo, screen, casasNoEstado, CENARIO_BATALHA, TODAS_CASAS_FROTA_FIXA } from './helpers.js';
+import { waitFor } from '@testing-library/dom';
+import { abrirJogo, alvo, meu, screen, casasNoEstado, CENARIO_BATALHA, TODAS_CASAS_FROTA_FIXA } from './helpers.js';
 
 /** Casas já atingidas de um lado (erro + acerto + afundado). */
 const atingidas = (lado) => ['erro', 'acerto', 'afundado'].reduce((n, e) => n + casasNoEstado(lado, e).length, 0);
 const texto = (id) => screen.getByTestId(id);
+// O computador acerta as 14 casas da sua frota, uma atrás da outra (cada acerto dá direito a outro tiro).
+const CPU_VENCE = { ...CENARIO_BATALHA, 'tiros-cpu': TODAS_CASAS_FROTA_FIXA.join(',') };
 
 test('TC-NV-21 vitória', async () => {
   const user = await abrirJogo(CENARIO_BATALHA);
@@ -29,3 +32,19 @@ test('TC-NV-21 vitória', async () => {
   expect(texto('mensagem')).toHaveTextContent(/^Você venceu!$/);
   expect(atingidas('meu')).toBe(0);
 });
+
+test('TC-NV-22 derrota', async () => {
+  const user = await abrirJogo(CPU_VENCE);
+  await user.click(alvo('J10'));
+  await waitFor(() => expect(texto('mensagem')).toHaveTextContent(/^Você perdeu!$/), { timeout: 15000 });
+  expect(texto('placar-meus')).toHaveTextContent(/^0$/);
+  for (const casa of TODAS_CASAS_FROTA_FIXA) {
+    expect(meu(casa)).toHaveAttribute('data-estado', 'afundado');
+  }
+  expect(atingidas('meu')).toBe(14);
+  for (const casa of TODAS_CASAS_FROTA_FIXA) {
+    expect(alvo(casa)).toHaveAttribute('data-estado', 'navio');
+  }
+  expect(casasNoEstado('alvo', 'navio')).toHaveLength(14);
+  expect(alvo('J10')).toHaveAttribute('data-estado', 'erro');
+}, 30_000);
