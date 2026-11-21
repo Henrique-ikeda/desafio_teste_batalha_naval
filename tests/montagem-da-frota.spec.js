@@ -302,3 +302,71 @@ test('TC-NV-10 começar só com a frota completa', async () => {
   expect(casasNoEstado('meu', 'navio')).toHaveLength(14);
   expect(screen.getByTestId('btn-comecar')).toBeEnabled();
 });
+
+// Helpers do TC-NV-11 (locais a este arquivo). Conferem a frota pela propriedade, sem depender de qual frota o Aleatório sorteou.
+
+/**
+ * Grupos de casas `navio` do seu tabuleiro que se tocam (8 direções, inclusive diagonal).
+ * Devolve cada grupo como lista de [coluna, linha] (coluna 0–9 de A–J, linha 1–10).
+ */
+function gruposComCasas() {
+  const casas = casasNoEstado('meu', 'navio').map((c) => {
+    const id = c.getAttribute('data-testid').slice(4);
+    return [LETRAS.indexOf(id[0]), Number(id.slice(1))];
+  });
+  const vistos = new Set();
+  const grupos = [];
+  for (let i = 0; i < casas.length; i++) {
+    if (vistos.has(i)) continue;
+    const grupo = [];
+    const pilha = [i];
+    vistos.add(i);
+    while (pilha.length) {
+      const atual = pilha.pop();
+      const [x, y] = casas[atual];
+      grupo.push(casas[atual]);
+      for (let j = 0; j < casas.length; j++) {
+        if (vistos.has(j)) continue;
+        const [a, b] = casas[j];
+        if (Math.abs(a - x) <= 1 && Math.abs(b - y) <= 1) { vistos.add(j); pilha.push(j); }
+      }
+    }
+    grupos.push(grupo);
+  }
+  return grupos;
+}
+
+/** Um grupo está em linha reta e contíguo: todas na mesma linha (colunas consecutivas) ou na mesma coluna (linhas consecutivas). */
+function emLinhaReta(grupo) {
+  const n = grupo.length;
+  const cols = grupo.map(([c]) => c);
+  const lins = grupo.map(([, l]) => l);
+  const mesmaLinha = lins.every((l) => l === lins[0]);
+  const mesmaColuna = cols.every((c) => c === cols[0]);
+  // Como não há casas repetidas, intervalo igual a n-1 garante que são contíguas.
+  if (mesmaLinha) return Math.max(...cols) - Math.min(...cols) === n - 1;
+  if (mesmaColuna) return Math.max(...lins) - Math.min(...lins) === n - 1;
+  return false;
+}
+
+/** Confere a frota inteira: 14 casas navio, 4 grupos de tamanhos [2,3,4,5], cada um em linha reta. */
+function conferirFrotaValida() {
+  expect(casasNoEstado('meu', 'navio')).toHaveLength(14);
+  const grupos = gruposComCasas();
+  // 4 grupos separados prova: sem sobreposição, sem encostar nem na diagonal.
+  expect(grupos.map((g) => g.length).sort((a, b) => a - b)).toEqual([2, 3, 4, 5]);
+  // Linha reta prova que nenhum navio dobra.
+  for (const g of grupos) expect(emLinhaReta(g)).toBe(true);
+}
+
+test('TC-NV-11 aleatório respeita as regras', async () => {
+  const user = await abrirJogo();
+  // Repete o sorteio: cada rodada tem que dar uma frota válida, sem depender de sorte.
+  for (let i = 0; i < 10; i++) {
+    await user.click(screen.getByTestId('btn-aleatorio'));
+    conferirFrotaValida();
+    // Todos os navios saíram da lista de posicionar.
+    for (const l of ['P', 'E', 'S', 'D']) expect(screen.queryByTestId(`frota-${l}`)).not.toBeInTheDocument();
+    expect(screen.getByTestId('btn-comecar')).toBeEnabled();
+  }
+});
