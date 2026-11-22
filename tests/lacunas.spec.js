@@ -1,10 +1,12 @@
 // Tarefa A7 (Henrique): lacunas de cobertura achadas na auditoria. Contrato: seções 1, 3 e 5 do PLANEJAMENTO.md. Cenário padrão: CENARIO_BATALHA.
 import { waitFor } from '@testing-library/dom';
-import { abrirJogo, alvo, meu, screen, casasNoEstado, CENARIO_BATALHA, TODAS_CASAS_FROTA_FIXA } from './helpers.js';
+import { abrirJogo, alvo, meu, screen, casasNoEstado, CENARIO_BATALHA, TODAS_CASAS_FROTA_FIXA, FROTA_FIXA } from './helpers.js';
 
 // A spec não diz se o computador atira na hora ou com atraso: tudo que depende do tiro dele
 // é conferido com waitFor, para o teste valer nas duas implementações.
 const ESPERA = { timeout: 5000 };
+// Só a frota do computador é fixa; a sua sai do Aleatório.
+const SO_CPU_FIXA = { cpu: FROTA_FIXA };
 /** Casas já atingidas de um lado (erro + acerto + afundado). */
 const atingidas = (lado) => ['erro', 'acerto', 'afundado'].reduce((n, e) => n + casasNoEstado(lado, e).length, 0);
 // O computador acerta as 14 casas da sua frota, uma atrás da outra: o jogador perde.
@@ -86,3 +88,22 @@ test.each([
   expect(screen.getByTestId('placar-cpu')).toHaveTextContent(/^4$/);
   expect(casasNoEstado('alvo', 'oculto')).toHaveLength(99);
 }, 30_000);
+
+test('TC-NV-43 nova partida mantém a frota cpu', async () => {
+  const user = await abrirJogo(SO_CPU_FIXA);
+  await user.click(screen.getByTestId('btn-aleatorio'));
+  await user.click(screen.getByTestId('btn-comecar'));
+  await user.click(alvo('J10'));
+  await waitFor(() => expect(screen.getByTestId('vez')).toHaveTextContent(/^Você$/), ESPERA);
+
+  await user.click(screen.getByTestId('btn-nova-partida'));
+  expect(screen.getByTestId('frota-P')).toBeVisible();
+  expect(casasNoEstado('alvo', 'oculto')).toHaveLength(100);
+
+  await user.click(screen.getByTestId('btn-aleatorio'));
+  await user.click(screen.getByTestId('btn-comecar'));
+  await user.click(alvo('A1'));
+  expect(alvo('A1')).toHaveAttribute('data-estado', 'acerto');
+  expect(screen.getByTestId('tiros')).toHaveTextContent(/^1$/);
+  expect(screen.getByTestId('placar-cpu')).toHaveTextContent(/^4$/);
+});
