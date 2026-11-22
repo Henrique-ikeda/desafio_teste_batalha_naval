@@ -107,3 +107,24 @@ test('TC-NV-43 nova partida mantém a frota cpu', async () => {
   expect(screen.getByTestId('tiros')).toHaveTextContent(/^1$/);
   expect(screen.getByTestId('placar-cpu')).toHaveTextContent(/^4$/);
 });
+
+// O computador só tem 1 tiro na lista (I1); depois dele volta a sortear (seção 3, parâmetro tiros-cpu).
+const SO_UM_TIRO_CPU = { jogador: FROTA_FIXA, cpu: FROTA_FIXA, 'tiros-cpu': 'I1' };
+const minhaVez = () => /^Você$/.test(screen.getByTestId('vez').textContent.trim());
+const perdeu = () => /^Você perdeu!$/.test(screen.getByTestId('mensagem').textContent.trim());
+
+test('TC-NV-44 tiros-cpu esgotado: o computador volta a sortear e não repete', async () => {
+  const user = await abrirJogo(SO_UM_TIRO_CPU);
+  let antes = 0;
+  for (const casa of ['J10', 'J9', 'J8']) {
+    await user.click(alvo(casa));
+    await waitFor(() => {
+      expect(alvo(casa)).toHaveAttribute('data-estado', 'erro');
+      expect(atingidas('meu')).toBeGreaterThan(antes);
+      expect(perdeu() || minhaVez()).toBe(true);
+    }, ESPERA);
+    if (casa === 'J10') expect(meu('I1')).toHaveAttribute('data-estado', 'erro');
+    antes = atingidas('meu');
+  }
+  expect(atingidas('meu')).toBeGreaterThanOrEqual(3);
+}, 30_000);
