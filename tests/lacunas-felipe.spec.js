@@ -29,3 +29,26 @@ test('TC-NV-29 afundar não passa a vez', async () => {
   expect(screen.getByTestId('acertos')).toHaveTextContent(/^2$/);
   expect(atingidas('meu')).toBe(1);
 });
+
+test('TC-NV-30 clique repetido em acerto e em afundado não conta', async () => {
+  const user = await abrirJogo(CENARIO_BATALHA);
+  await user.click(alvo('A1'));
+  await user.click(alvo('A1'));
+  expect(alvo('A1')).toHaveAttribute('data-estado', 'acerto');
+  expect(screen.getByTestId('tiros')).toHaveTextContent(/^1$/);
+  expect(screen.getByTestId('acertos')).toHaveTextContent(/^1$/);
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Você$/);
+  await user.click(alvo('G1'));
+  await user.click(alvo('G2'));
+  expect(alvo('G1')).toHaveAttribute('data-estado', 'afundado');
+  expect(alvo('G2')).toHaveAttribute('data-estado', 'afundado');
+  expect(screen.getByTestId('tiros')).toHaveTextContent(/^3$/);
+  expect(screen.getByTestId('acertos')).toHaveTextContent(/^3$/);
+  await user.click(alvo('G1'));
+  expect(screen.getByTestId('tiros')).toHaveTextContent(/^3$/);
+  expect(screen.getByTestId('acertos')).toHaveTextContent(/^3$/);
+  expect(screen.getByTestId('placar-cpu')).toHaveTextContent(/^3$/);
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Você$/);
+  expect(atingidas('meu')).toBe(0);
+  expect(screen.getByTestId('mensagem')).toHaveTextContent(/^Afundou o Destroier!$/);
+});
