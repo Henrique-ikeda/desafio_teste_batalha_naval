@@ -50,7 +50,7 @@ npx jest tests/<arquivo>.spec.js -t "TC-NV-NN"   # um caso só
 - **Metodologia:** TDD, um caso de teste por vez: escrever, rodar, ver falhar pelo motivo certo e fazer o commit `test:`. Uso de IA documentado em [docs/TDD-COM-IA.md](docs/TDD-COM-IA.md).
 - **Integração contínua:** o GitHub Actions ([`.github/workflows/testes.yml`](.github/workflows/testes.yml)) roda `npm ci` e `npm run verificar` em todo push e Pull Request, com Node 18, 20 e 22 no Ubuntu e no Windows, e guarda como artefato o relatório JSON do Jest e a saída do verificador. Na entrega, o job `verificar-completo` (rodado à mão ou num PR com o rótulo `entrega`) roda `npm run verificar:completo`, que também exige um teste para cada caso da tabela abaixo.
 
-## Casos de teste (39)
+## Casos de teste (42)
 
 | ID | Cenário | Arquivo | Resultado esperado | Autor |
 |---|---|---|---|---|
@@ -95,6 +95,7 @@ npx jest tests/<arquivo>.spec.js -t "TC-NV-NN"   # um caso só
 | TC-NV-39 | Clicar num navio posicionado com outro selecionado | `tests/montagem-da-frota.spec.js` | `meu-A1` a `meu-E1` continuam `navio`; exatamente 5 casas `navio`; `frota-P` não volta (fora da página); `frota-E` continua na lista; `mensagem` contém "inválida" | Henrique |
 | TC-NV-40 | Montagem acaba ao Começar | `tests/montagem-da-frota.spec.js` | `vez` = "Você"; continua com exatamente 14 casas `navio` e nenhum `frota-*` na página; `btn-aleatorio` e `btn-orientacao` desabilitados | Henrique |
 | TC-NV-41 | Tiro antes de Começar não faz nada | `tests/montagem-da-frota.spec.js` | Antes de Começar: `alvo-A1` = `oculto` (100 casas `oculto`) e `frota-P` na lista. Depois de Começar: o tiro em `alvo-A1` vale e dá `acerto` | Henrique |
+| TC-NV-42 | Nova partida depois do fim e uma segunda partida (parametrizado: vitória / derrota) | `tests/lacunas-felipe.spec.js` | Depois de Nova partida: `frota-P`, `E`, `S`, `D` na lista; 100 `meu-*` = `agua`; 100 `alvo-*` = `oculto`; `btn-comecar` desabilitado; `tiros` = 0 e `acertos` = 0; `mensagem` não mostra "Você venceu!" nem "Você perdeu!". Na segunda partida (`btn-aleatorio`, `btn-comecar`): `alvo-A1` = `acerto` (a `cpu` continua valendo), `tiros` = 1, `placar-cpu` = 4 e exatamente 99 `alvo-*` = `oculto` | Felipe (commit feito pelo Henrique) |
 
 ## Estrutura
 
