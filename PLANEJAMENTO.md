@@ -214,8 +214,9 @@ Cada integrante é **dono de arquivos de teste diferentes** (coluna "Arquivos").
 | **F3** Quem acerta joga de novo | `felipe/f3-vez` | tests/tiros.spec.js | 15, 16, 17 |
 | **F4** Afundar | `felipe/f4-afundar` | tests/afundar.spec.js | 19, 20 |
 | **F5** Vitória, derrota e nova partida | `felipe/f5-fim` | tests/fim-de-jogo.spec.js | 21, 22, 24 |
+| **F6** Lacunas de cobertura (achados da auditoria) | `felipe/f6-lacunas` | tests/lacunas-felipe.spec.js | adicionais 29, 30 e 42 em diante |
 
-**IDs reservados:** `TC-NV-25` a `TC-NV-30` são do Felipe, para casos adicionais que cobrem regras da seção 1 ainda sem TC (ver `docs/MATRIZ-COBERTURA.md`). Propostos: 25 e 26 entram na F3 (`tests/tiros.spec.js`), 27 e 28 na F5 (`tests/fim-de-jogo.spec.js`). Cada um ganha a linha na seção 5 no PR da sua tarefa. Casos novos do Henrique usam `TC-NV-31` em diante.
+**IDs reservados:** `TC-NV-25` a `TC-NV-30` são do Felipe, para casos adicionais que cobrem regras da seção 1 ainda sem TC (ver `docs/MATRIZ-COBERTURA.md`). Propostos: 25 e 26 entram na F3 (`tests/tiros.spec.js`), 27 e 28 na F5 (`tests/fim-de-jogo.spec.js`). Cada um ganha a linha na seção 5 no PR da sua tarefa. Casos novos do Henrique usam `TC-NV-31` em diante. **Tarefa F6:** `TC-NV-42` a `TC-NV-61` ficam reservados ao Felipe (casos adicionais de lacunas, em `tests/lacunas-felipe.spec.js`), e os casos novos do Henrique passam a usar `TC-NV-62` em diante. Os TCs 29 e 30 também entram na F6.
 
 ## 5. Casos de teste (interface)
 
