@@ -266,6 +266,8 @@ Todos com `CENARIO_BATALHA` (`?jogador=FROTA_FIXA&cpu=FROTA_FIXA&tiros-cpu=AGUA_
 | TC-NV-26 | Computador afunda um navio seu | `tiros-cpu=G1,G2,I1`. Atirar em `alvo-J10` | `meu-G1` e `meu-G2` = `afundado`; `meu-I1` = `erro`; `placar-meus` = 3; `vez` = "Você" |
 | TC-NV-27 | Derrota bloqueia novos tiros | `tiros-cpu` = as 14 casas da `FROTA_FIXA` (cenário do TC-NV-22). Atirar em `alvo-J10`; depois de "Você perdeu!", clicar `alvo-J9` | `alvo-J9` não vira `erro` (continua `oculto`: não tem navio); `tiros` continua 1; `mensagem` continua "Você perdeu!" |
 | TC-NV-28 | Derrota revela só os navios que sobraram | `tiros-cpu` = as 14 casas da `FROTA_FIXA`. Atirar em `alvo-G1` e `alvo-G2` (afunda o Destroier) e depois em `alvo-J10` | `mensagem` = "Você perdeu!"; `alvo-G1` e `alvo-G2` continuam `afundado`; as outras 12 casas da frota do computador aparecem como `navio`; `placar-cpu` = 3 |
+| TC-NV-29 | Afundar não passa a vez | `CENARIO_BATALHA`. Atirar em `alvo-G1` e `alvo-G2` (afunda o Destroier); depois em `alvo-J10` | Depois de G2: `alvo-G1` e `alvo-G2` = `afundado`; `mensagem` = "Afundou o Destroier!"; `vez` = "Você"; `tiros` = 2 e `acertos` = 2; nenhuma casa atingida em `meu-*`. Depois de J10: o computador atira (`meu-I1` = `erro`) e a `vez` volta para "Você"; `tiros` = 3 e `acertos` = 2 |
+| TC-NV-30 | Clique repetido em acerto e em afundado não conta | `CENARIO_BATALHA`. Atirar em `alvo-A1` duas vezes; depois `alvo-G1`, `alvo-G2` (afunda o D) e `alvo-G1` de novo | Depois do A1 repetido: `tiros` = 1, `acertos` = 1 e `vez` = "Você". Depois do G1 repetido (casa `afundado`): `tiros` = 3, `acertos` = 3, `placar-cpu` = 3, `vez` = "Você" e nenhuma casa atingida em `meu-*` |
 
 ### Henrique — casos adicionais
 
