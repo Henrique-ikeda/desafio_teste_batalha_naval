@@ -19,7 +19,7 @@ Regras completas, contrato da tela e divisão das tarefas: [PLANEJAMENTO.md](PLA
 
 | Nome | RA | GitHub | Parte no trabalho |
 |---|---|---|---|
-| Henrique Kendi Ikeda | 24039456-2 | [Henrique-ikeda](https://github.com/Henrique-ikeda) | Tarefas A1–A5: estrutura do projeto, 12 casos de teste do plano (tabuleiros, montagem da frota, regra de não encostar e aleatório) e casos adicionais a partir do TC-NV-31 |
+| Henrique Kendi Ikeda | 24039456-2 | [Henrique-ikeda](https://github.com/Henrique-ikeda) | Tarefas A1–A7: estrutura do projeto, 12 casos de teste do plano (tabuleiros, montagem da frota, regra de não encostar e aleatório), casos adicionais a partir do TC-NV-31 e lacunas de cobertura (TC-NV-29, 30 e 42 a 51) |
 | Felipe Galeti Gôngora | 24036480-2 | [FGaleti](https://github.com/FGaleti) | Tarefas F1–F5: CI, README, 12 casos de teste do plano (tiros, quem acerta joga de novo, afundar, estatísticas, vitória, derrota e nova partida) e casos adicionais a partir do TC-NV-25 |
 
 As contribuições de cada um aparecem em **Insights → Contributors** e nos commits: cada caso de teste tem o seu commit `test: TC-NV-NN ...`, feito da conta de quem o escreveu, e chega à `main` por Pull Request revisado pelo outro integrante.
@@ -102,7 +102,7 @@ npx jest tests/<arquivo>.spec.js -t "TC-NV-NN"   # um caso só
 | TC-NV-46 | Começar volta a desabilitar depois de devolver um navio | `tests/lacunas.spec.js` | Com 4 navios: `btn-comecar` habilitado. Depois de devolver o P: `btn-comecar` desabilitado, `frota-P` volta para a lista e exatamente 9 casas `navio` | Henrique |
 | TC-NV-47 | O navio continua selecionado depois de cada tipo de recusa (parametrizado) | `tests/lacunas.spec.js` | Depois de cada recusa: `mensagem` contém "inválida" e a contagem de casas `navio` não muda. Depois da casa válida (sem clicar no navio de novo): ele é posicionado (`meu-A1`–`meu-E1`, `meu-A3`–`meu-D3`, `meu-A4`–`meu-D4` e `meu-A3`–`meu-B3`, nesta ordem) e sai da lista | Henrique |
 | TC-NV-48 | Submarino e Destroier na vertical | `tests/lacunas.spec.js` | `meu-J1`, `meu-J2`, `meu-J3` = `navio` e `meu-J4` = `agua`; `meu-A9` e `meu-A10` = `navio`; exatamente 5 casas `navio`; `frota-S` e `frota-D` saem da página | Henrique |
-| TC-NV-49 | Navio vertical não encosta, pela ponta, num navio horizontal | `tests/lacunas.spec.js` | Recusado: `meu-B1` e `meu-B2` = `agua`; exatamente 5 casas `navio` (só o P); `mensagem` contém "inválida"; `frota-D` continua na lista | Henrique |
+| TC-NV-49 | Encostar na ponta, na mesma coluna | `tests/lacunas.spec.js` | Recusado: `meu-A5` e `meu-A6` = `agua`; exatamente 4 casas `navio` (só o E); `mensagem` contém "inválida"; `frota-D` continua na lista | Henrique |
 | TC-NV-50 | Encostar na diagonal nos quatro cantos (parametrizado) | `tests/lacunas.spec.js` | Em cada caso: recusado; as duas casas do D = `agua`; exatamente 5 casas `navio`; `mensagem` contém "inválida"; `frota-D` continua na lista | Henrique |
 | TC-NV-51 | Frota sorteada do computador segue as regras | `tests/lacunas.spec.js` | `mensagem` = "Você perdeu!"; as casas do alvo em `navio`, `acerto` ou `afundado` são exatamente 14, em 4 grupos (vizinhança de 8 direções) de tamanhos 2, 3, 4 e 5, cada um em linha reta e contíguo | Henrique |
 
