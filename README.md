@@ -19,7 +19,7 @@ Regras completas, contrato da tela e divisão das tarefas: [PLANEJAMENTO.md](PLA
 
 | Nome | RA | GitHub | Parte no trabalho |
 |---|---|---|---|
-| Henrique Kendi Ikeda | 24039456-2 | [Henrique-ikeda](https://github.com/Henrique-ikeda) | Tarefas A1–A5: estrutura do projeto, 12 casos de teste do plano (tabuleiros, montagem da frota, regra de não encostar e aleatório) e casos adicionais a partir do TC-NV-31 |
+| Henrique Kendi Ikeda | 24039456-2 | [Henrique-ikeda](https://github.com/Henrique-ikeda) | Tarefas A1–A7: estrutura do projeto, 12 casos de teste do plano (tabuleiros, montagem da frota, regra de não encostar e aleatório), casos adicionais a partir do TC-NV-31 e lacunas de cobertura (TC-NV-29, 30 e 42 a 51) |
 | Felipe Galeti Gôngora | 24036480-2 | [FGaleti](https://github.com/FGaleti) | Tarefas F1–F5: CI, README, 12 casos de teste do plano (tiros, quem acerta joga de novo, afundar, estatísticas, vitória, derrota e nova partida) e casos adicionais a partir do TC-NV-25 |
 
 As contribuições de cada um aparecem em **Insights → Contributors** e nos commits: cada caso de teste tem o seu commit `test: TC-NV-NN ...`, feito da conta de quem o escreveu, e chega à `main` por Pull Request revisado pelo outro integrante.
@@ -50,7 +50,7 @@ npx jest tests/<arquivo>.spec.js -t "TC-NV-NN"   # um caso só
 - **Metodologia:** TDD, um caso de teste por vez: escrever, rodar, ver falhar pelo motivo certo e fazer o commit `test:`. Uso de IA documentado em [docs/TDD-COM-IA.md](docs/TDD-COM-IA.md).
 - **Integração contínua:** o GitHub Actions ([`.github/workflows/testes.yml`](.github/workflows/testes.yml)) roda `npm ci` e `npm run verificar` em todo push e Pull Request, com Node 18, 20 e 22 no Ubuntu e no Windows, e guarda como artefato o relatório JSON do Jest e a saída do verificador. Na entrega, o job `verificar-completo` (rodado à mão ou num PR com o rótulo `entrega`) roda `npm run verificar:completo`, que também exige um teste para cada caso da tabela abaixo.
 
-## Casos de teste (39)
+## Casos de teste (51)
 
 | ID | Cenário | Arquivo | Resultado esperado | Autor |
 |---|---|---|---|---|
@@ -82,6 +82,8 @@ npx jest tests/<arquivo>.spec.js -t "TC-NV-NN"   # um caso só
 | TC-NV-26 | Computador afunda um navio seu | `tests/tiros.spec.js` | `meu-G1` e `meu-G2` = `afundado`; `meu-I1` = `erro`; `placar-meus` = 3; `vez` = "Você" | Felipe |
 | TC-NV-27 | Derrota bloqueia novos tiros | `tests/fim-de-jogo.spec.js` | `alvo-J9` não vira `erro` (continua `oculto`: não tem navio); `tiros` continua 1; `mensagem` continua "Você perdeu!" | Felipe |
 | TC-NV-28 | Derrota revela só os navios que sobraram | `tests/fim-de-jogo.spec.js` | `mensagem` = "Você perdeu!"; `alvo-G1` e `alvo-G2` continuam `afundado`; as outras 12 casas da frota do computador aparecem como `navio`; `placar-cpu` = 3 | Felipe |
+| TC-NV-29 | Afundar não passa a vez | `tests/lacunas.spec.js` | Depois de G2: `alvo-G1` e `alvo-G2` = `afundado`; `mensagem` = "Afundou o Destroier!"; `vez` = "Você"; `tiros` = 2 e `acertos` = 2; nenhuma casa atingida em `meu-*`. Depois de J10: o computador atira (`meu-I1` = `erro`) e a `vez` volta para "Você"; `tiros` = 3 e `acertos` = 2 | Henrique |
+| TC-NV-30 | Clique repetido em acerto e em afundado não conta | `tests/lacunas.spec.js` | Depois do A1 repetido: `tiros` = 1, `acertos` = 1 e `vez` = "Você". Depois do G1 repetido (casa `afundado`): `tiros` = 3, `acertos` = 3, `placar-cpu` = 3, `vez` = "Você" e nenhuma casa atingida em `meu-*` | Henrique |
 | TC-NV-31 | Limites do tabuleiro (parametrizado) | `tests/montagem-da-frota.spec.js` | A7, V: recusado, 0 casas `navio`, `mensagem` contém "inválida", `frota-P` continua na lista. F1, H: `meu-F1` a `meu-J1` = `navio`. A6, V: `meu-A6` a `meu-A10` = `navio`. Nos aceitos: exatamente 5 casas `navio` e `frota-P` sai da página | Henrique |
 | TC-NV-32 | Reposicionar um navio devolvido | `tests/montagem-da-frota.spec.js` | `meu-A1` a `meu-E1` = `agua`; `meu-A3` a `meu-E3` = `navio`; exatamente 5 casas `navio`; `frota-P` sai da página | Henrique |
 | TC-NV-33 | Orientação alterna nos dois sentidos | `tests/montagem-da-frota.spec.js` | `btn-orientacao` = "Vertical" depois do 1º clique e "Horizontal" depois do 2º; `meu-A1` a `meu-D1` = `navio`; `meu-A2` = `agua`; exatamente 4 casas `navio` | Henrique |
@@ -93,6 +95,16 @@ npx jest tests/<arquivo>.spec.js -t "TC-NV-NN"   # um caso só
 | TC-NV-39 | Clicar num navio posicionado com outro selecionado | `tests/montagem-da-frota.spec.js` | `meu-A1` a `meu-E1` continuam `navio`; exatamente 5 casas `navio`; `frota-P` não volta (fora da página); `frota-E` continua na lista; `mensagem` contém "inválida" | Henrique |
 | TC-NV-40 | Montagem acaba ao Começar | `tests/montagem-da-frota.spec.js` | `vez` = "Você"; continua com exatamente 14 casas `navio` e nenhum `frota-*` na página; `btn-aleatorio` e `btn-orientacao` desabilitados | Henrique |
 | TC-NV-41 | Tiro antes de Começar não faz nada | `tests/montagem-da-frota.spec.js` | Antes de Começar: `alvo-A1` = `oculto` (100 casas `oculto`) e `frota-P` na lista. Depois de Começar: o tiro em `alvo-A1` vale e dá `acerto` | Henrique |
+| TC-NV-42 | Nova partida depois do fim e uma segunda partida (parametrizado: vitória / derrota) | `tests/lacunas.spec.js` | Depois de Nova partida: `frota-P`, `E`, `S`, `D` na lista; 100 `meu-*` = `agua`; 100 `alvo-*` = `oculto`; `btn-comecar` desabilitado; `tiros` = 0 e `acertos` = 0; `mensagem` não mostra "Você venceu!" nem "Você perdeu!". Na segunda partida (`btn-aleatorio`, `btn-comecar`): `alvo-A1` = `acerto` (a `cpu` continua valendo), `tiros` = 1, `placar-cpu` = 4 e exatamente 99 `alvo-*` = `oculto` | Henrique |
+| TC-NV-43 | Nova partida mantém a frota `cpu` | `tests/lacunas.spec.js` | `alvo-A1` = `acerto` (a frota do computador continua a `FROTA_FIXA` depois da Nova partida); `tiros` = 1; `placar-cpu` = 4 | Henrique |
+| TC-NV-44 | `tiros-cpu` esgotado: o computador volta a sortear e não repete | `tests/lacunas.spec.js` | `meu-I1` = `erro` depois do 1º tiro; depois de cada tiro de água do jogador, o total de casas atingidas em `meu-*` aumenta (3 depois do 3º tiro, no mínimo) e a `vez` volta para "Você" (ou o jogo acaba com "Você perdeu!") | Henrique |
+| TC-NV-45 | Vitória e derrota com o Porta-aviões por último (parametrizado) | `tests/lacunas.spec.js` | Vitória: depois de `A4` o jogo continua (`placar-cpu` = 1, sem "Você venceu!"); depois de `A5`: `mensagem` = "Você venceu!" e `placar-cpu` = 0. Derrota: `mensagem` = "Você perdeu!" e `placar-meus` = 0 | Henrique |
+| TC-NV-46 | Começar volta a desabilitar depois de devolver um navio | `tests/lacunas.spec.js` | Com 4 navios: `btn-comecar` habilitado. Depois de devolver o P: `btn-comecar` desabilitado, `frota-P` volta para a lista e exatamente 9 casas `navio` | Henrique |
+| TC-NV-47 | O navio continua selecionado depois de cada tipo de recusa (parametrizado) | `tests/lacunas.spec.js` | Depois de cada recusa: `mensagem` contém "inválida" e a contagem de casas `navio` não muda. Depois da casa válida (sem clicar no navio de novo): ele é posicionado (`meu-A1`–`meu-E1`, `meu-A3`–`meu-D3`, `meu-A4`–`meu-D4` e `meu-A3`–`meu-B3`, nesta ordem) e sai da lista | Henrique |
+| TC-NV-48 | Submarino e Destroier na vertical | `tests/lacunas.spec.js` | `meu-J1`, `meu-J2`, `meu-J3` = `navio` e `meu-J4` = `agua`; `meu-A9` e `meu-A10` = `navio`; exatamente 5 casas `navio`; `frota-S` e `frota-D` saem da página | Henrique |
+| TC-NV-49 | Encostar na ponta, na mesma coluna | `tests/lacunas.spec.js` | Recusado: `meu-A5` e `meu-A6` = `agua`; exatamente 4 casas `navio` (só o E); `mensagem` contém "inválida"; `frota-D` continua na lista | Henrique |
+| TC-NV-50 | Encostar na diagonal nos quatro cantos (parametrizado) | `tests/lacunas.spec.js` | Em cada caso: recusado; as duas casas do D = `agua`; exatamente 5 casas `navio`; `mensagem` contém "inválida"; `frota-D` continua na lista | Henrique |
+| TC-NV-51 | Frota sorteada do computador segue as regras | `tests/lacunas.spec.js` | `mensagem` = "Você perdeu!"; as casas do alvo em `navio`, `acerto` ou `afundado` são exatamente 14, em 4 grupos (vizinhança de 8 direções) de tamanhos 2, 3, 4 e 5, cada um em linha reta e contíguo | Henrique |
 
 ## Estrutura
 

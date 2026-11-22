@@ -65,3 +65,49 @@ As ambiguidades encontradas na validação viraram regras escritas na seção 1 
 | Passos do TC-NV-10 diziam só "→ conferir" | Passos explicitados (o que conferir com 3 e com 4 navios); o resultado esperado não mudou | — |
 
 O TC-NV-08 continua clicando `frota-D` de novo antes de G2 (é o que a seção 5 chama de "posicionar"); a regra da seleção é coberta à parte pelo TC-NV-37.
+
+## Lacunas fechadas (A7)
+
+A auditoria de completude achou regras sem teste ou com um exemplo só. A tarefa A7 acrescentou 15 casos em `tests/lacunas.spec.js` (TC-NV-29, 30 e 42 a 51), validados com o mesmo método: uma implementação de referência nova, escrita em diretório temporário só a partir das seções 1 e 3 e apagada no fim, e um mutante por regra.
+
+| Verificação | Resultado |
+|---|---|
+| Suíte inteira (antiga + nova) contra a referência | 64/64 síncrona e 64/64 assíncrona (`setTimeout` no computador) |
+| 3 rodadas seguidas (assíncrona) | 64/64 nas três |
+| TC-NV-44 e TC-NV-51 (com sorteio), 50 rodadas | 50/50 cada |
+
+### Mutantes: antes × depois
+
+"Antes" = suíte de 44 testes que já estava na `main`; "depois" = suíte com a A7.
+
+| Mutante (um defeito por vez) | Antes | Depois |
+|---|---|---|
+| Nova partida mantém os tiros no alvo | sobrevive | morto por 42 |
+| Clicar de novo numa casa de acerto conta como tiro | sobrevive | morto por 30 |
+| Nova partida depois do fim não volta à montagem | sobrevive | morto por 42 |
+| Nova partida perde `cpu`/`tiros-cpu` | sobrevive | morto por 42, 43 |
+| `tiros-cpu` esgotado: o computador para de atirar | sobrevive | morto por 44 |
+| Vitória/derrota só quando o último navio é o Destroier | sobrevive | morto por 45 |
+| Começar continua habilitado depois de devolver um navio | sobrevive | morto por 46 |
+| Navio perde a seleção após recusa por sair / sobrepor / lado | sobrevive (os 3) | morto por 47 (os 3) |
+| Submarino e Destroier não funcionam na vertical | sobrevive | morto por 48 |
+| Encostar na vertical pela ponta é aceito | sobrevive | morto por 49 |
+| Frota sorteada do computador pode encostar ou sobrepor | sobrevive | morto por 51 em 11 de 20 rodadas (ver abaixo) |
+| Sobreposição só detectada na casa inicial | sobrevive | **sobrevive: equivalente** |
+| Afundar passa a vez; afundar não conta acerto | morto por 21 | morto por 21, 29, 30 |
+| Nova partida reaplica `jogador` | morto por 24 | morto por 24, 42 |
+| Computador só afunda o Destroier; placar-meus só conta o D | morto por 22 | morto por 22, 45 |
+| Diagonal só num dos quatro cantos | morto por 11 (aleatório) | morto por 11, 50 |
+| Borda só na coluna / só na linha | morto por 31 / 05 | morto por 31 / 05, 47 |
+| Computador atira depois da vitória | morto por 21 | morto por 21 |
+
+Antes: 9 de 23 mortos. Depois: 21 de 23 mortos, e os dois que restam não são lacuna de teste:
+
+- **Sobreposição só na casa inicial (equivalente):** com a regra de não encostar, uma sobreposição no meio do navio também encosta no outro navio pela casa vizinha, então a recusa acontece de qualquer jeito e nenhum teste de interface distingue.
+- **Frota sorteada inválida (probabilístico):** o mutante só gera defeito visível quando o sorteio encosta ou sobrepõe navios. Quando o sorteio sai válido por acaso, não há o que detectar. Nas 20 rodadas, o TC-NV-51 pegou o defeito nas 11 em que ele apareceu, e o teste passou 50/50 contra a referência correta.
+
+O TC-NV-49 foi corrigido durante a validação. A primeira versão (D vertical tocando a ponta de um navio horizontal) também tocava na diagonal, então não isolava o "encostar pela ponta". A versão final encosta dois navios verticais ponta com ponta na mesma coluna, o equivalente vertical do TC-NV-36.
+
+### Ambiguidades que continuam abertas
+
+O que `vez` mostra durante o turno do computador; a mensagem quando o computador acerta ou afunda um navio seu; clique do jogador durante a vez do computador; qual casa o computador sorteia depois que `tiros-cpu` acaba (o TC-NV-44 só exige casa nova); o estado inicial exato dos placares. Nenhum TC da A7 depende delas.
