@@ -1,4 +1,4 @@
-// Tarefa F6 (Felipe): lacunas de cobertura achadas na auditoria. Contrato: seções 1, 3 e 5 do PLANEJAMENTO.md. Cenário padrão: CENARIO_BATALHA.
+// Tarefa A7 (Henrique): lacunas de cobertura achadas na auditoria. Contrato: seções 1, 3 e 5 do PLANEJAMENTO.md. Cenário padrão: CENARIO_BATALHA.
 import { waitFor } from '@testing-library/dom';
 import { abrirJogo, alvo, meu, screen, casasNoEstado, CENARIO_BATALHA, TODAS_CASAS_FROTA_FIXA } from './helpers.js';
 
